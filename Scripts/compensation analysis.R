@@ -8,7 +8,7 @@
 library(ggplot2); library(metafor); library("patchwork")
 
 ### load data in
-comp_dat <- read.csv("~/CnGV-CoGV Meta-analysis/Data/raw_data.csv")
+comp_dat <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/raw_data.csv")
 
 ### subset to CnGV only
 comp_dat <- subset(comp_dat, Counter.or.Co == "Counter" | Counter.or.Co == "counter")

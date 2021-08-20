@@ -30,9 +30,9 @@ library(ggplot2); library(metafor); library(bayestestR); library(patchwork); lib
 #                        measure = "SMD") # use standardizes mean difference (Hedge's g)
 # 
 
-cngv_metadata <- read.csv("~/CnGV-CoGV Meta-analysis/Data/meta_data.csv")
+cngv_metadata <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/meta_data.csv")
 
-cngvES_data<- read.csv("~/CnGV-CoGV Meta-analysis/Data/cngv_allES.csv")
+cngvES_data<- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_allES.csv")
 
 #print levels of Treatment to see which is and isn't a number
 levels(model_data_temp$Treatment)

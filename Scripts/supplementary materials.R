@@ -9,17 +9,17 @@ library(brms); library(dplyr); library(knitr); library(kableExtra); library(sjPl
 ###load in models/data
 
 #int only mode for cngv
-int_mod <- readRDS("~/CnGV-CoGV Meta-analysis/Data/model output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
+int_mod <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
 
 #int only mode for cogv
-int_mod_co <- readRDS("~/CnGV-CoGV Meta-analysis/Data/model output/mod_norm_logtrans_trait_2randeff_student_co.rds")
+int_mod_co <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model output/mod_norm_logtrans_trait_2randeff_student_co.rds")
 
 #metaregression mod for cngv
 metareg_mod
 
 #model data
 
-mod_dat <- read.csv("~/CnGV-CoGV Meta-analysis/Data/raw_data.csv")
+mod_dat <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/raw_data.csv")
 
 ################################################################################################
 ### make tables for model summary

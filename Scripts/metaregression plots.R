@@ -89,7 +89,7 @@ library(tidyverse); library(tidybayes); library(ggridges); library(metafor); lib
 
 #### same for medium strength priors
 
-mod_metareg_strongprior <- readRDS("~/CnGV-CoGV Meta-analysis/Data/model output/mod_metareg_sp.RDS")
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model output/mod_metareg_sp.RDS")
 mod_metareg_strongprior
 
 posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)

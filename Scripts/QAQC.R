@@ -5,9 +5,9 @@
 # raw data and vice versa.
 ########################################################################
 
-raw_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/raw_data.csv")
+raw_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/raw_data.csv")
 
-meta_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/meta_data.csv")
+meta_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/meta_data.csv")
 
 raw_authors <- unique(as.character(raw_data$Paper..Authors...Year.))
 

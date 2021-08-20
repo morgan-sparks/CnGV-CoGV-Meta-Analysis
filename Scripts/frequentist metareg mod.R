@@ -13,11 +13,11 @@ library(metafor); library(sjPlot)
 ### metaregression first
 # load data
 
-metaregression_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/cngv_model_data.csv")
+metaregression_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
 metaregression_data$mean_ES <- abs(metaregression_data$mean_ES)
 metaregression_data$Species <- as.character(metaregression_data$Species)
 
-vcv_mat <- as.matrix(read.csv("~/CnGV-CoGV Meta-analysis/Data/cngv_vcv_randeff_mat.csv", row.names = 1, sep = ","))
+vcv_mat <- as.matrix(read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_vcv_randeff_mat.csv", row.names = 1, sep = ","))
 
 #remove spaces in names
 
@@ -100,13 +100,13 @@ funnel(randeff_mod)
 
 ### load data
 
-real_model_data_trait <-  read.csv("~/CnGV-CoGV Meta-analysis/Data/cogv_model_data.csv")
+real_model_data_trait <-  read.csv("~/CnGV-CoGV-Meta-analysis/Data/cogv_model_data.csv")
 
 # remove a row of data that didn't have a NCBI entry:
 real_model_data_trait <-  real_model_data_trait[-which(real_model_data_trait$Species == "Warramaba whitei"),]
 
 #correlation matrix for phylogenetic random effect
-vcv_mat <- as.matrix(read.csv("~/CnGV-CoGV Meta-analysis/Data/cogv_vcv_randeff_mat.csv", row.names = 1, sep = ","))
+vcv_mat <- as.matrix(read.csv("~/CnGV-CoGV-Meta-analysis/Data/cogv_vcv_randeff_mat.csv", row.names = 1, sep = ","))
 
 #remove spaces in names and replace with "_"
 rownames(vcv_mat) <- gsub(" ", "_", rownames(vcv_mat))

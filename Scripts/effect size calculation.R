@@ -11,7 +11,7 @@ library(metafor); library(ggplot2)
 
 ###############################################################################################
 ### initial data wrangling and renaming to set up the rest of this work
-raw_dat <- read.csv("~/CnGV-CoGV Meta-analysis/Data/raw_data.csv")
+raw_dat <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/raw_data.csv")
 
 
 #####---------------- recode trait into a much smaller subset of general traits, call it alt_trait
@@ -135,7 +135,7 @@ cngv_allES <- cngv_allES[-which(cngv_allES$Paper.Name == "Geographic Variation o
                                 & cngv_allES$Experiment.. == 2),]
 
 #write out all effect sizes
-write.csv( cngv_allES, "~/CnGV-CoGV Meta-analysis/Data/cngv_allES.csv")
+write.csv( cngv_allES, "~/CnGV-CoGV-Meta-analysis/Data/cngv_allES.csv")
 # loop to bring those into summaries
     
 temp <- NULL
@@ -341,7 +341,7 @@ ggplot(cogv_allES) +
 #####
 # Combine meta data with raw calculated effect sizes
 #####
-meta_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/meta_data.csv")
+meta_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/meta_data.csv")
 
 cngv_model_data <- merge(cngv_summary_ES, meta_data, # merge summary effects with metadata
                          by.x = "Paper..Authors...Year.", by.y = "X", #Merge by paper authors/year e.g. Name et al. 2021
@@ -356,6 +356,6 @@ cogv_model_data <- merge(cogv_summary_ES, meta_data, # merge summary effects wit
 # Write out files
 #####
 
-write.csv(cngv_model_data, "~/CnGV-CoGV Meta-analysis/cngv_model_data.csv")
-write.csv(cogv_model_data, "~/CnGV-CoGV Meta-analysis/cogv_model_data.csv")
+write.csv(cngv_model_data, "~/CnGV-CoGV-Meta-analysis/cngv_model_data.csv")
+write.csv(cogv_model_data, "~/CnGV-CoGV-Meta-analysis/cogv_model_data.csv")
 

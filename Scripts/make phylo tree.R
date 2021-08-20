@@ -13,7 +13,7 @@ library(taxize); library(ape) #; library(brranching); library(rotl)
 ### First do for cngv data
 
 ### load data with species names and turn column with species names into characters
-trait_level_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/cngv_model_data.csv")
+trait_level_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
 species_list <- as.character(trait_level_data$Species)
 
 ### remove duplicate species names
@@ -38,13 +38,13 @@ vcv_mat <- vcv.phylo(taxize_tree$phylo, corr = TRUE)
 heatmap(vcv_mat, Colv = NA, Rowv = NA) #plot to just look
 
 # #write out into file
-write.csv(vcv_mat, "~/CnGV-CoGV Meta-analysis/Data/cngv_vcv_randeff_mat.csv")
+write.csv(vcv_mat, "~/CnGV-CoGV-Meta-analysis/Data/cngv_vcv_randeff_mat.csv")
 
 ################################################################################################################
 ### do same for cogradient variation
 
 ### load data with species names and turn column with species names into characters
-trait_level_data <- read.csv("~/CnGV-CoGV Meta-analysis/Data/cogv_model_data.csv")
+trait_level_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cogv_model_data.csv")
 species_list <- as.character(trait_level_data$Species)
 
 ### remove duplicate species names
@@ -70,5 +70,5 @@ vcv_mat <- vcv.phylo(taxize_tree$phylo, corr = TRUE)
 heatmap(vcv_mat, Colv = NA, Rowv = NA) #plot to just look
 
 # #write out into file
-write.csv(vcv_mat, "~/CnGV-CoGV Meta-analysis/Data/cogv_vcv_randeff_mat.csv")
+write.csv(vcv_mat, "~/CnGV-CoGV-Meta-analysis/Data/cogv_vcv_randeff_mat.csv")
 
