@@ -22,7 +22,7 @@ Model data for cogradient random effects model
 Variance-covariance matrices for counter- and cogradient random effects models and metaregression
 
 -----
-## Non-meta-anlytic analysis files
+## Non-meta-analytic analysis files
 
 #### cngv_allES.csv 
 File for temperature/latitude analysis and compensation analysis
