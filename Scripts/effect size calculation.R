@@ -356,6 +356,6 @@ cogv_model_data <- merge(cogv_summary_ES, meta_data, # merge summary effects wit
 # Write out files
 #####
 
-write.csv(cngv_model_data, "~/CnGV-CoGV-Meta-analysis/cngv_model_data.csv")
-write.csv(cogv_model_data, "~/CnGV-CoGV-Meta-analysis/cogv_model_data.csv")
+write.csv(cngv_model_data, "~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
+write.csv(cogv_model_data, "~/CnGV-CoGV-Meta-analysis/Data/cogv_model_data.csv")
 

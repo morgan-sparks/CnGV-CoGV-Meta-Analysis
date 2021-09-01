@@ -1,13 +1,13 @@
 library(readxl)
 
 # wos search
-wos <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data check.xlsx", sheet = "WOS search")
+wos <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data_check.xlsx", sheet = "WoS Search")
 
 #conover citations
-conover <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data check.xlsx", sheet = "Conover citations")
+conover <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data_check.xlsx", sheet = "Conover Citations")
 
 # combined
-all <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data check.xlsx", sheet = "all")
+all <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data_check.xlsx", sheet = "All Searches")
 
 
 wos$Title %in% all$Title
