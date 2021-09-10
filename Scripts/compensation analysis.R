@@ -109,7 +109,7 @@ perfectcomp <- 1-(overcomp+undercomp)
 
 overcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >.5),"comp_es"])
 undercomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es <(-.5)),"comp_es"])
-perfectcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >(-.5) & comp_data_fin$comp_es <.5),"comp_es"])
+perfectcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >=(-.5) & comp_data_fin$comp_es <=.5),"comp_es"])
 
 proportion <- c(overcomp, perfectcomp, undercomp)
 comp_mean <- c(overcomp_mean, perfectcomp_mean, undercomp_mean )
@@ -149,37 +149,121 @@ ggplot(data = comp_data_fin) +
   theme_classic()
 
 #### plot as a line
-comp_data_fin_zero <- comp_data_fin
-comp_data_fin_zero$comp_es <- 0
-comp_data_fin <- cbind(comp_data_fin, x_index = rep(10, nrow(comp_data_fin)), study_index = c(1:nrow(comp_data_fin)))
-comp_data_fin_zero <- cbind(comp_data_fin_zero, x_index = rep(1, nrow(comp_data_fin)), study_index = c(1:nrow(comp_data_fin)))
-comp_data_fin_zero <- rbind(comp_data_fin_zero, comp_data_fin)
+# comp_data_fin_zero <- comp_data_fin
+# comp_data_fin_zero$comp_es <- 0
+# comp_data_fin <- cbind(comp_data_fin, x_index = rep(10, nrow(comp_data_fin)), study_index = c(1:nrow(comp_data_fin)))
+# comp_data_fin_zero <- cbind(comp_data_fin_zero, x_index = rep(1, nrow(comp_data_fin)), study_index = c(1:nrow(comp_data_fin)))
+# comp_data_fin_zero <- rbind(comp_data_fin_zero, comp_data_fin)
 
 comp_table_zero <- comp_table
-comp_table_zero$comp_mean <- 0
+comp_table_zero$comp_mean
 comp_table <- cbind(comp_table, x_index = rep(10, 3), study_index = c(1:3))
-comp_table_zero <- cbind(comp_table_zero, x_index = rep(1, 3),  study_index = c(1:3))
+comp_table$comp_mean <- 0
+comp_table_zero <- cbind(comp_table_zero, x_index = rep(0, 3),  study_index = c(1:3))
 comp_table_zero <- rbind(comp_table, comp_table_zero)
 
+# 
+# full_line <- ggplot(data = comp_data_fin_zero) +
+#   geom_point(aes(x = x_index, y = comp_es), color = "darkorchid4", alpha =0.25, size = 0.5) +
+#   geom_line(aes(x = x_index, y = comp_es, group = study_index), color = "darkorchid4",  alpha = 0.25) +
+#   geom_point(data = comp_table_zero,
+#              aes(x = x_index, y = comp_mean), color = "darkorchid4", size =  2) +
+#   geom_line(data = comp_table_zero,
+#             aes(x = x_index, y = comp_mean, group = study_index), color = "darkorchid4", size =  1, alpha = 1) +
+#   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +labs(y = "Compensation Effect Size") +
+#   theme_classic(base_size = 14) +
+#   theme(axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank())
+# 
+# small_line <- ggplot(data = comp_data_fin_zero) +
+#   geom_point(aes(x = x_index, y = comp_es), color = "darkorchid4", alpha = 0.25, size = 0.5) +
+#   geom_line(aes(x = x_index, y = comp_es, group = study_index), color = "darkorchid4",  alpha = 0.5) +
+#   geom_point(data = comp_table_zero,
+#              aes(x = x_index, y = comp_mean), color = "darkorchid4", size =  2) +
+#   geom_line(data = comp_table_zero,
+#             aes(x = x_index, y = comp_mean, group = study_index), color = "darkorchid4", size =  1, alpha = 1) +
+#   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
+#   labs(y = "Compensation Effect Size") +
+#   ylim(-15,7) +
+#   theme_classic(base_size = 14) +
+#   theme(axis.title.x=element_blank(),
+#        axis.text.x=element_blank(),
+#        axis.ticks.x=element_blank())
+# 
+# full_line + small_line
 
-ggplot(data = comp_data_fin_zero) +
-  geom_point(aes(x = x_index, y = comp_es), color = "darkorchid4", alpha =0.25, size = 0.5) +
-  geom_line(aes(x = x_index, y = comp_es, group = study_index), color = "darkorchid4",  alpha = 0.25) +
-  geom_point(data = comp_table_zero,
-             aes(x = x_index, y = comp_mean), color = "darkorchid4", size =  2) +
-  geom_line(data = comp_table_zero,
-            aes(x = x_index, y = comp_mean, group = study_index), color = "darkorchid4", size =  1, alpha = 1) +
-  geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
-  theme_classic()
+# ggplot(data = comp_data_fin_zero[which(comp_data_fin_zero$comp_es >= 0.25),]) +
+#   geom_point(aes(x = x_index, y = comp_es), color = "darkorchid4", alpha =0.25, size = 0.5) +
+#   geom_line(aes(x = x_index, y = comp_es, group = study_index), color = "darkorchid4",  alpha = 0.25) +
+#   geom_point(data = comp_table_zero[which(comp_table_zero$comp_mean >= -0.5),],
+#              aes(x = x_index, y = comp_mean), color = "darkorchid4", size =  2) +
+#   geom_line(data = comp_table_zero[which(comp_table_zero$comp_mean >= -0.5),],
+#             aes(x = x_index, y = comp_mean, group = study_index), color = "darkorchid4", size =  1, alpha = 1) +
+#   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +labs(y = "Compensation Effect Size") +
+#   theme_classic(base_size = 14) +
+#   theme(axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank())
 
-ggplot(data = comp_data_fin_zero) +
-  geom_point(aes(x = x_index, y = comp_es), color = "darkorchid4", alpha = 0.25, size = 0.5) +
-  geom_line(aes(x = x_index, y = comp_es, group = study_index), color = "darkorchid4",  alpha = 0.5) +
-  geom_point(data = comp_table_zero,
-             aes(x = x_index, y = comp_mean), color = "darkorchid4", size =  2) +
-  geom_line(data = comp_table_zero,
-            aes(x = x_index, y = comp_mean, group = study_index), color = "darkorchid4", size =  1, alpha = 1) +
+#######################
+
+over_dat <- comp_data_fin[which(comp_data_fin$comp_es > 0.5),]
+over_dat <- rbind(over_dat, over_dat)
+over_dat <- cbind(over_dat, 
+                  x_index = c(rep(0, nrow(over_dat)/2), rep(10, nrow(over_dat)/2)),
+                  study_index = rep(1:(nrow(over_dat)/2), 2)
+                  )
+over_dat[((nrow(over_dat)/2)+1):nrow(over_dat), "comp_es"] <- 0
+
+perfect_dat <- comp_data_fin[which(comp_data_fin$comp_es <= 0.5 & comp_data_fin$comp_es >= -0.5),]
+perfect_dat <- rbind(perfect_dat, perfect_dat)
+perfect_dat <- cbind(perfect_dat, 
+                  x_index = c(rep(0, nrow(perfect_dat)/2), rep(10, nrow(perfect_dat)/2)),
+                  study_index = rep(1:(nrow(perfect_dat)/2), 2)
+)
+perfect_dat[((nrow(perfect_dat)/2)+1):nrow(perfect_dat), "comp_es"] <- 0
+
+under_dat <- comp_data_fin[which(comp_data_fin$comp_es < -0.5),]
+under_dat <- rbind(under_dat, under_dat)
+under_dat <- cbind(under_dat, 
+                     x_index = c(rep(0, nrow(under_dat)/2), rep(10, nrow(under_dat)/2)),
+                     study_index = rep(1:(nrow(under_dat)/2), 2)
+)
+under_dat[((nrow(under_dat)/2)+1):nrow(under_dat), "comp_es"] <- 0
+
+
+
+comp_plot <- ggplot() +
+  geom_point(data = over_dat, aes(x = x_index, y = comp_es), color = "dodgerblue", alpha =0.25, size = 0.5) +
+  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index), color = "dodgerblue",  alpha = 0.25) +
+  geom_point(data = perfect_dat, aes(x = x_index, y = comp_es), color = "darkorange", alpha =0.25, size = 0.5) +
+  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index), color = "darkorange",  alpha = 0.25) +
+  geom_point(data = under_dat, aes(x = x_index, y = comp_es), color = "darkred", alpha =0.25, size = 0.5) +
+  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index), color = "darkred",  alpha = 0.25) +
+  geom_point(data = comp_table_zero[c(1,4),],
+             aes(x = x_index, y = comp_mean), color = "dodgerblue", size =  2) +
+  geom_line(data = comp_table_zero[c(1,4),],
+            aes(x = x_index, y = comp_mean, group = study_index), color = "dodgerblue", size =  1, alpha = 1) +
+  geom_point(data = comp_table_zero[c(2,5),],
+             aes(x = x_index, y = comp_mean), color = "darkorange", size =  2) +
+  geom_line(data = comp_table_zero[c(2,5),],
+            aes(x = x_index, y = comp_mean, group = study_index), color = "darkorange", size =  1, alpha = 1) +
+  geom_point(data = comp_table_zero[c(3,6),],
+             aes(x = x_index, y = comp_mean), color = "darkred", size =  2) +
+  geom_line(data = comp_table_zero[c(3,6),],
+            aes(x = x_index, y = comp_mean, group = study_index), color = "darkred", size =  1, alpha = 1) +
   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
-  ylim(-15,7) +
-  theme_classic()
+  labs(y = "Compensation Effect Size") +
+  theme_classic(base_size = 14) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+comp_plot + ylim(-15,7) 
+
+
+
+
+
 
