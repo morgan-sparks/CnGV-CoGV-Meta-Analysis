@@ -232,35 +232,55 @@ under_dat <- cbind(under_dat,
 )
 under_dat[((nrow(under_dat)/2)+1):nrow(under_dat), "comp_es"] <- 0
 
+# color pallette from http://tsitsul.in/blog/coloropt/
 
+comp_plot_pal <- c("#984464", "#56641a", "#984464")
 
 comp_plot <- ggplot() +
-  geom_point(data = over_dat, aes(x = x_index, y = comp_es), color = "dodgerblue", alpha =0.25, size = 0.5) +
-  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index), color = "dodgerblue",  alpha = 0.25) +
-  geom_point(data = perfect_dat, aes(x = x_index, y = comp_es), color = "darkorange", alpha =0.25, size = 0.5) +
-  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index), color = "darkorange",  alpha = 0.25) +
-  geom_point(data = under_dat, aes(x = x_index, y = comp_es), color = "darkred", alpha =0.25, size = 0.5) +
-  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index), color = "darkred",  alpha = 0.25) +
+  geom_point(data = over_dat, aes(x = x_index, y = comp_es, color = "over"), alpha =0.25, size = 0.5) +
+  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"),  alpha = 0.25) +
+  geom_point(data = perfect_dat, aes(x = x_index, y = comp_es, color = "perfect"), alpha =0.25, size = 0.5) +
+  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"),  alpha = 0.25) +
+  geom_point(data = under_dat, aes(x = x_index, y = comp_es, color = "under"), alpha =0.25, size = 0.5) +
+  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"),  alpha = 0.25) +
   geom_point(data = comp_table_zero[c(1,4),],
-             aes(x = x_index, y = comp_mean), color = "dodgerblue", size =  2) +
+             aes(x = x_index, y = comp_mean, color = "over"), size =  2) +
   geom_line(data = comp_table_zero[c(1,4),],
-            aes(x = x_index, y = comp_mean, group = study_index), color = "dodgerblue", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(2,5),],
-             aes(x = x_index, y = comp_mean), color = "darkorange", size =  2) +
+             aes(x = x_index, y = comp_mean, color = "perfect"), size =  2) +
   geom_line(data = comp_table_zero[c(2,5),],
-            aes(x = x_index, y = comp_mean, group = study_index), color = "darkorange", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(3,6),],
-             aes(x = x_index, y = comp_mean), color = "darkred", size =  2) +
+             aes(x = x_index, y = comp_mean, color = "under"), size =  2) +
   geom_line(data = comp_table_zero[c(3,6),],
-            aes(x = x_index, y = comp_mean, group = study_index), color = "darkred", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), size =  1, alpha = 1) +
   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
   labs(y = "Compensation Effect Size") +
+  scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
   theme_classic(base_size = 14) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank(),
+        legend.position = "NULL")
 
-comp_plot + ylim(-15,7) 
+comp_plot_small <- comp_plot + ylim(-15,7)
+
+(comp_plot + theme(legend.position = "none")) / (comp_plot_small + theme(legend.position = "none"))
+
+(comp_plot_small + theme(legend.position = "none")) + 
+  inset_element((comp_plot + labs(y = NULL) + theme(legend.position = "none"))
+                 ,left = 0.62, bottom = 0.01, right = .99, top = .45)
+
+
+
+### compensation conceptual figure
+# comp_concept <- png::readPNG("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Compensation conceptual figure.png")
+# plot(comp_concept)
+# comp_concept + comp_plot
+# 
+# 
+# 
 
 
 

@@ -51,7 +51,7 @@ strong_priors <-  c(prior(normal(0, 2),  "b"),
 
 # metaregression model w/ strong priors
 mod_metareg_sp <- brm(
-  log(mean_ES) | se(var_ES/sqrt(samp.size_ES))  ~ 0 + alt_trait + Gradient + Year + Class + # fixed effects
+  log(mean_ES) | se(var_ES/sqrt(samp.size_ES))  ~ 0 + alt_trait + Gradient + Class + # fixed effects
     (1|paper_number/Trait) + (1 | gr(Species, cov = vcv_mat)), #random effects
   data = metaregression_data, #data for full model
   data2 = list(vcv_mat = vcv_mat),
@@ -65,7 +65,7 @@ mod_metareg_sp <- brm(
 
 summary(mod_metareg_sp)
 
-saveRDS(mod_metareg_sp, "/scratch/bell/sparks35/CNGV_analysis/output/mod_metareg_sp.RDS")
+saveRDS(mod_metareg_sp, "/scratch/bell/sparks35/CNGV_analysis/output/mod_metareg_noyear_sp.RDS")
 
 sessionInfo()
 
