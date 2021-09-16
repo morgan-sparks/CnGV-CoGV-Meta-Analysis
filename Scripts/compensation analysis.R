@@ -258,7 +258,7 @@ comp_plot <- ggplot() +
   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
   labs(y = "Compensation Effect Size") +
   scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
-  theme_classic(base_size = 14) +
+  theme_classic(base_size = 12) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -268,21 +268,20 @@ comp_plot_small <- comp_plot + ylim(-15,7)
 
 (comp_plot + theme(legend.position = "none")) / (comp_plot_small + theme(legend.position = "none"))
 
-(comp_plot_small + theme(legend.position = "none")) + 
-  inset_element((comp_plot + labs(y = NULL) + theme(legend.position = "none"))
-                 ,left = 0.62, bottom = 0.01, right = .99, top = .45)
+fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
+  # inset_element((comp_plot + labs(y = NULL) + theme(legend.position = "none"))
+  #                ,left = 0.5, bottom = 0.01, right = .8, top = .35)
+
+fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
+fig_4
+
+fig_4_small <- comp_plot + labs(y = NULL) + theme(legend.position = "none")
+fig_4_small
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4.png", plot = fig_4, width = 1.8, height = 6, units = "in", dpi = 600)
 
 
-
-### compensation conceptual figure
-# comp_concept <- png::readPNG("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Compensation conceptual figure.png")
-# plot(comp_concept)
-# comp_concept + comp_plot
-# 
-# 
-# 
-
-
+ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4_small.png", plot = fig_4_small, width = 1, height = 2.4, units = "in", dpi = 600)
 
 
 
