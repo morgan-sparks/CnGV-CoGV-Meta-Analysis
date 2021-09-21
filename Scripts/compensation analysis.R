@@ -283,6 +283,33 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4.png", plot = fig
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4_small.png", plot = fig_4_small, width = 1, height = 2.4, units = "in", dpi = 600)
 
+position_jitter(width = .1)
 
 
+#### gord questions plots
+gord_plot <- ggplot() +
+  geom_jitter(data = over_dat[which(over_dat$x_index == 0),], aes(x = x_index, y = comp_es, color = "over")) +
+  #geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"),  alpha = 0.25) +
+  geom_jitter(data = perfect_dat[which(perfect_dat$x_index == 0),], aes(x = x_index, y = comp_es, color = "perfect")) +
+  #geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"),  alpha = 0.25) +
+  geom_jitter(data = under_dat[which(under_dat$x_index == 0),], aes(x = x_index, y = comp_es, color = "under")) +
+  #geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"),  alpha = 0.25)
+  geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
+  labs(y = "Compensation Effect Size") +
+  scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
+  theme_classic(base_size = 12) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.position = "NULL")
 
+gord_plot
+
+gord_plot + (gord_plot + ylim(-15,7))
+
+(comp_plot + geom_freqpoly(data = comp_data_fin, 
+                          aes(y = comp_es), breaks = seq(-80, 40, by = 0.25), color ="darkorange", alpha = 0.75)) +
+(comp_plot + geom_freqpoly(data = comp_data_fin, 
+                           aes(y = comp_es), breaks = seq(-80, 40, by = 0.25), color ="darkorange", alpha = 0.75) + ylim(-15,7))
+  
+  
