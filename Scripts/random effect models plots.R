@@ -1,7 +1,7 @@
 library(tidybayes); library(ggridges); library(tidyverse); library(metafor); library(brms); library(forcats)
 
 ################################################################################################
-# plots for CnGV
+#` plots for CnGV
 
 mod_2randeff <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
 get_variables(mod_2randeff)
@@ -141,7 +141,7 @@ ggplot(data = out_all_sum_co, aes(b_Intercept, factor(paper_number, levels = reo
   theme_classic() +
   ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_co_paper_randeff_forestplot.pdf", 
          width = 4, height = 6, units = "in", dpi = 300)
-
+`
 ########################
 # workflow for trait nested in paper number plot
 
@@ -203,10 +203,8 @@ fig2 <- ggplot() +
   # geom_pointintervalh(data = out_both_sum, size = 4) +
   geom_dots(data = out_both, aes(x = b_Intercept, y = adaptation, color = adaptation)) +
   scale_color_manual(values=c("darkgreen", "darkorchid4")) +
-  geom_pointinterval(data = out_both_sum, 
-                     aes(x= b_Intercept, y = adaptation, xmin = .lower, xmax = .upper),
-                     size = 4)+
-  geom_point(data = out_both_sum_med, aes(x =b_Intercept, y =adaptation), shape = 18, size = 4) +
+  geom_pointinterval(data = out_both_sum, aes(x= b_Intercept, y = adaptation, xmin = .lower, xmax = .upper), size = 4)+
+  geom_point(data = out_both_sum_med, aes(x =b_Intercept, y =adaptation), shape = 18, size = 4, color = "darkgrey") +
 geom_text(
     data = mutate_if(out_both_sum, is.numeric, round, 2),
     # Use glue package to combine strings
