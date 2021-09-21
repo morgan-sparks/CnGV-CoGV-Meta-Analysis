@@ -212,7 +212,7 @@ geom_text(
     hjust = "inward", nudge_y = 0.33) +
   xlim(0,5) +
   geom_vline(xintercept = 1, linetype = "dashed") +
-  labs(x = "Effect Size", y = "") +
+  labs(x = "Effect Size", y = NULL) +
   theme_classic(base_size = 16) +
   theme(legend.position = "none",
         axis.text.y = element_text(angle=90, hjust = 0.5))
