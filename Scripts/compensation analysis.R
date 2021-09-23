@@ -238,23 +238,24 @@ comp_plot_pal <- c("#984464", "#56641a", "#984464")
 
 comp_plot <- ggplot() +
   geom_point(data = over_dat, aes(x = x_index, y = comp_es, color = "over"), alpha =0.25, size = 0.5) +
-  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"),  alpha = 0.25) +
+  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"), linetype = "dashed",  alpha = 0.25) +
   geom_point(data = perfect_dat, aes(x = x_index, y = comp_es, color = "perfect"), alpha =0.25, size = 0.5) +
-  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"),  alpha = 0.25) +
+  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"), linetype = "dashed",  alpha = 0.25) +
   geom_point(data = under_dat, aes(x = x_index, y = comp_es, color = "under"), alpha =0.25, size = 0.5) +
-  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"),  alpha = 0.25) +
+  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"), linetype = "dashed",  alpha = 0.25) +
   geom_point(data = comp_table_zero[c(1,4),],
              aes(x = x_index, y = comp_mean, color = "over"), size =  2) +
   geom_line(data = comp_table_zero[c(1,4),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), linetype = "dashed", size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(2,5),],
-             aes(x = x_index, y = comp_mean, color = "perfect"), size =  2) +
+             aes(x = x_index, y = comp_mean, color = "perfect"),  size =  2) +
   geom_line(data = comp_table_zero[c(2,5),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), linetype = "dashed", size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(3,6),],
              aes(x = x_index, y = comp_mean, color = "under"), size =  2) +
   geom_line(data = comp_table_zero[c(3,6),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), linetype = "dashed", size =  1, alpha = 1) +
+  geom_point(aes(x = 10, y = 0), color = "black", size =  2) +
   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
   labs(y = "Compensation Effect Size") +
   scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
