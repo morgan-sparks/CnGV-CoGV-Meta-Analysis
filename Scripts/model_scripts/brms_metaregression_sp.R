@@ -27,6 +27,7 @@ metaregression_data[which(metaregression_data$Species == "Hyla_cinerea"), "Speci
 #turn year into continuous variable and species into factor
 metaregression_data$Year <- as.numeric(as.character(metaregression_data$Year))
 metaregression_data$Species <- as.factor(metaregression_data$Species)
+metaregression_data$Class <- as.factor(metaregression_data$Class)
 
 #abs val of effect size, only care about magnitude of effect
 metaregression_data$mean_ES <- abs(metaregression_data$mean_ES)
@@ -46,7 +47,7 @@ burn <-7500
 cores <- 4
 cntrl_vars <- list(adapt_delta = 0.995, max_treedepth = 20)
 
-strong_priors <-  c(prior(normal(0, 2),  "b"),
+strong_priors <-  c(prior(normal(0, 1),  "b"),
                               prior(cauchy(0, 2),  "sd"))
 
 # metaregression model w/ strong priors

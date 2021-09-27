@@ -89,26 +89,31 @@ library(tidyverse); library(tidybayes); library(ggridges); library(metafor); lib
 
 #### same for medium strength priors
 
-mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model output/mod_metareg_sp.RDS")
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp.RDS")
 mod_metareg_strongprior
 
 posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)
 
-posterior_summary(posteriors_sp[1:30])
+posterior_summary(posteriors_sp[1:32])
+posts <- data.frame(posterior_summary(posteriors_sp[1:32]))
 
-post_sum <-  data.frame(posterior_summary(posteriors_sp[1:33]))
+post_sum <-  data.frame(posterior_summary(posteriors_sp[1:32]))
 
-post_sum <- round(post_sum[,1:4], 2)
+post_sum <- round(post_sum[,1:4], 3)
 
-row.names(post_sum) <- c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "developmental rate", "Gamete size", "Growth rate", 
+post_sum # make sure rounding worked
+
+### make sure these match names in posterior summary command
+row.names(post_sum) <- c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
                          "Metabolic rate", "Phenology", "Reproductive rate", "Elevation",
-                         "Latitude", "Migration distance", "Salinity", "Shade cover", "Soil phosphate",
-                         "Temperature", "Urbanisation", "Wave action", "Year",
-                         "Amphibia", "Asteraceae", "Bivalvia", "Actinopterygii", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
+                         "Latitude", "Migration distance", "Photoperiod", "Salinity", "Shade cover", "Soil phosphate",
+                         "Temperature", "Urbanisation", "Wave action",
+                         "Amphibia", "Anthaozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
                          "SD Paper Number", "SD Paper Number:Trait", "SD Species"
                          )
 
 
+#make summary table and send to folder for paper files
 post_sum %>% 
   kbl() %>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
@@ -135,11 +140,8 @@ ciliary_activity <- spread_draws(mod_metareg_strongprior, b_alt_traitciliary_act
   mutate(posterior_val = exp(b_alt_traitciliary_activity),
          variable = "Ciliary activity", covariate = "Trait")
 
-development_rate <- spread_draws(mod_metareg_strongprior, b_alt_traitdevelopmentalrate ) %>%
-  mutate(posterior_val = exp(b_alt_traitdevelopmentalrate),
-         variable = "Developmental rate", covariate = "Trait")
 
-developmentrate <- spread_draws(mod_metareg_strongprior, b_alt_traitdevelopmental_rate ) %>%
+development_rate <- spread_draws(mod_metareg_strongprior, b_alt_traitdevelopmental_rate ) %>%
   mutate(posterior_val = exp(b_alt_traitdevelopmental_rate),
          variable = "Developmental rate", covariate = "Trait")
 
@@ -181,6 +183,10 @@ migration_distance <- spread_draws(mod_metareg_strongprior,  b_Gradientmigration
   mutate(posterior_val = exp(b_Gradientmigrationdistance),
          variable = "Migration distance", covariate = "Gradient")
 
+photoperiod <- spread_draws(mod_metareg_strongprior,  b_Gradientphotoperiod) %>%
+  mutate(posterior_val = exp(b_Gradientphotoperiod),
+         variable = "Photoperiod", covariate = "Gradient")
+
 salinity <- spread_draws(mod_metareg_strongprior, b_Gradientsalinity) %>%
   mutate(posterior_val = exp(b_Gradientsalinity),
          variable = "Salinity", covariate = "Gradient")
@@ -204,15 +210,20 @@ urbanisation <- spread_draws(mod_metareg_strongprior,  b_Gradienturbanisation) %
 wave_action <- spread_draws(mod_metareg_strongprior, b_Gradientwaveaction) %>%
   mutate(posterior_val = exp(b_Gradientwaveaction),
          variable = "Wave action", covariate = "Gradient")
-#year
-year <- spread_draws(mod_metareg_strongprior, b_Year ) %>%
-  mutate(posterior_val = exp(b_Year ),
-         variable = "Year", covariate = "Year")
+
+#year (now removed)
+# year <- spread_draws(mod_metareg_strongprior, b_Year ) %>%
+#   mutate(posterior_val = exp(b_Year ),
+#          variable = "Year", covariate = "Year")
 
 #Class
 amphibia <- spread_draws(mod_metareg_strongprior, b_ClassAmphibia ) %>%
   mutate(posterior_val = exp(b_ClassAmphibia ),
          variable = "Amphibia", covariate = "Class")
+
+anthozoa <- spread_draws(mod_metareg_strongprior,b_ClassAnthozoa ) %>%
+  mutate(posterior_val = exp(b_ClassAnthozoa ),
+         variable = "Anthozoa", covariate = "Class")
 
 asteraceae <- spread_draws(mod_metareg_strongprior,b_ClassAsteraceae  ) %>%
   mutate(posterior_val = exp(b_ClassAsteraceae  ),
@@ -223,9 +234,9 @@ bivalvia <- spread_draws(mod_metareg_strongprior,b_ClassBivalvia) %>%
          variable = "Bivalvia", covariate = "Class")
 
 
-gasterosteidae <- spread_draws(mod_metareg_strongprior,b_ClassGasterosteidae) %>%
-  mutate(posterior_val = exp(b_ClassGasterosteidae),
-         variable = "Actinopterygii", covariate = "Class")
+# gasterosteidae <- spread_draws(mod_metareg_strongprior,b_ClassGasterosteidae) %>%
+#   mutate(posterior_val = exp(b_ClassGasterosteidae),
+#          variable = "Actinopterygii", covariate = "Class")
 
 gastropoda <- spread_draws(mod_metareg_strongprior,b_ClassGastropoda   ) %>%
   mutate(posterior_val = exp(b_ClassGastropoda),
@@ -258,17 +269,16 @@ reptilia  <-spread_draws(mod_metareg_strongprior,b_ClassReptilia) %>%
 
 all_draws <- bind_rows(body_shape, body_size, carotenoid_concentration, ciliary_activity, development_rate, gamete_size, growth_rate, 
                         metabolic_rate, phenology, reproductive_rate, elevation,
-                       latitude, migration_distance, salinity, shade_cover, soil_phosphate,
+                       latitude, migration_distance, photoperiod, salinity, shade_cover, soil_phosphate,
                        temperature, urbanisation, wave_action,
-                       amphibia, asteraceae, bivalvia, gasterosteidae, gastropoda, insecta,liliopsida, malacostraca, reptilia,
-                       year)  %>%
+                       amphibia, anthozoa, asteraceae, bivalvia, gastropoda, insecta,liliopsida, malacostraca, reptilia)  %>%
   ungroup() %>% # Ensure that Average effect is on the bottom of the forest plot
   mutate(variable = fct_relevel(variable,c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
                                            "Metabolic rate", "Phenology", "Reproductive rate", "Elevation",
-                                           "Latitude", "Migration distance", "Salinity", "Shade cover", "Soil phosphate",
+                                           "Latitude", "Migration distance","Photoperiod", "Salinity", "Shade cover", "Soil phosphate",
                                            "Temperature", "Urbanisation", "Wave action",
-                                            "Amphibia", "Asteraceae", "Bivalvia", "Actinopterygii", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
-                                           "Year")))
+                                            "Amphibia", "Anthozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia"
+                                           )))
 
 all_draws$covariate <- as.factor(all_draws$covariate)
 
@@ -287,7 +297,7 @@ cust_pal <- c("#E6AB02", "#1B9E77", "#7570B3","#66A61E" )
 d_ridges <- ggplot(data = all_draws, aes(posterior_val, variable))+
   geom_density_ridges(aes(fill= covariate), rel_min_height = 0.1, col = NA, scale = 1, alpha = 0.75) +
   geom_pointinterval(data = all_draws_sum, aes(posterior_val, variable, xmin = .lower, xmax = .upper ), color = "black", size = 1)  +
-  geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "black", size = 2) +
+  geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "darkgrey", size = 2) +
   geom_vline(xintercept = 0) +
   geom_vline(xintercept = 1.01, linetype = "dashed") +
   geom_text(data = mutate_if(all_draws_sum, is.numeric, round, 2),
@@ -302,14 +312,14 @@ d_ridges <- ggplot(data = all_draws, aes(posterior_val, variable))+
 quasi_random <- ggplot(data = all_draws, aes(posterior_val, variable))+
   geom_quasirandom(aes(color= covariate), groupOnX = FALSE, size = 0.1) +
   geom_pointinterval(data = all_draws_sum, aes(posterior_val, variable, xmin = .lower, xmax = .upper ), color = "black", size = 1)  +
-  geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "black", size = 2) +
+  geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "darkgrey", size = 2) +
   geom_vline(xintercept = 0) +
   geom_vline(xintercept = 1.01, linetype = "dashed") +
   geom_text(data = mutate_if(all_draws_sum, is.numeric, round, 2),
             aes(label = glue("{posterior_val} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -.5) +
   scale_color_manual(values = cust_pal) +
   labs(y = "", x = "Effect size") +
-  xlim(0,10)+
+  xlim(0,15)+
   theme_classic(base_size = 14) +
   theme(legend.position = "none")
        
