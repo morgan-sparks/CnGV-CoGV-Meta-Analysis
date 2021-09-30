@@ -3,7 +3,7 @@
 -----
 ## Project description
 
-This is a meta-analysis of cryptic local adaptation (co- and countergradient variation) that assesses the effects size of the genetic difference in phenotypic values. We do so using Bayesian hierarchical models. We also assess the effect size of compensation in populations exhibiting countergradient vartion (sensu Conover et al. 2009).
+This is a meta-analysis of cryptic local adaptation (co- and countergradient variation) that assesses the effects size of the genetic difference in phenotypic values. We do so using Bayesian hierarchical models. We also assess the effect size of compensation in populations exhibiting countergradient variation (sensu Conover et al. 2009).
 
 -----
 ## Data
