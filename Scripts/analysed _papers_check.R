@@ -24,3 +24,5 @@ line_num <-which(conover$Title %notin% all$Title)
 missing_conover <- cbind(line_num, conover[which(conover$Title %notin% all$Title),])
 
 write.csv(missing_conover, "~/CnGV-CoGV-Meta-analysis/Data/QAQC/missing_conover_citations.csv")
+
+#check Rodriguez-Diaz and Brana, Li et al., Gardiner, Wos

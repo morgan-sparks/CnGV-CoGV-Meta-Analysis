@@ -275,11 +275,11 @@ fin_temp_dat[which(fin_temp_dat$temp_diff == 0),]
 
 temp_reg <- ggplot(fin_temp_dat) + 
   geom_point(aes(x=temp_diff, y = log(abs(temp.mn)))) +
-  labs(x = "Experimental Temperature\nDifference (°C)", y = "Log Effect Size", title = "b)") +
-  lims(x = c(0,25)) +
+  labs(x = "Experimental Temperature Difference (°C)", y = "Log Effect Size", title = "b)") +
+  #lims(x = c(0,25)) +
   #geom_smooth(aes(x=temp_diff, y = log(abs(temp.mn))),method=lm, se=FALSE) +
   #geom_abline(intercept = 0.99, slope = 1) +
-  theme_classic(base_size = 12)
+  theme_classic(base_size = 14)
 
 
 ####
@@ -288,7 +288,7 @@ dist_reg <- ggplot(delta_grad_dat) +
   geom_point(aes(x=distance.between.analyzed..a.and.b..populations..km., y = log(abs(temp.mn))))  +
   labs(x = "Latitudinal Distance (km)", y = "Log Effect Size",  title = "a)")+
   #geom_smooth(aes(x=distance.between.analyzed..a.and.b..populations..km., y = log(abs(temp.mn))),method=lm, se=FALSE) +
-  theme_classic(base_size =  12)
+  theme_classic(base_size =  14)
 
 
 
@@ -297,10 +297,10 @@ dist_reg <- ggplot(delta_grad_dat) +
 
 ###  plot of all
 
-fig4 <- dist_reg + temp_reg
+figS1<- dist_reg + temp_reg
 
-ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 4.pdf", fig4,
-       width = 6, height = 6, units = "in", dpi = 300)
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Figure S1.pdf", figS1,
+       width = 6, height = 4, units = "in", dpi = 300)
 
 
 

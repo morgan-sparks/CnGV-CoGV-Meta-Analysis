@@ -42,16 +42,17 @@ reorder_object <- c("Average", 1:58)
 ggplot(data = out_all_sum, aes(b_Intercept, factor(paper_number, levels = reorder_object)))+
   geom_density_ridges(data = out_all, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
   geom_pointintervalh( size = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
   geom_text(
     data = mutate_if(out_all_sum, is.numeric, round, 2),
     # Use glue package to combine strings
     aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
     hjust = "inward") +
   labs(x = "Intercept", y = "Paper Number") +
-  xlim(0,8) +
+  xlim(0,15) +
   theme_classic() +
   ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_paper_randeff_forestplot.pdf", 
-         width = 4, height = 6, units = "in", dpi = 300)
+         width = 6, height = 8, units = "in", dpi = 300)
 
 ########################
 
@@ -87,7 +88,7 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
   xlim(0,15) +
   theme_classic(base_size = 8) +
   ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_paperXtrait_randeff_forestplot.pdf", 
-         width = 4, height = 8, units = "in", dpi = 300)
+         width = 6, height = 8, units = "in", dpi = 300)
 
 
 
@@ -98,6 +99,7 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
 
 mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
 get_variables(mod_2randeff_co)
+
 
 
 ########################
@@ -140,8 +142,8 @@ ggplot(data = out_all_sum_co, aes(b_Intercept, factor(paper_number, levels = reo
   xlim(0,15) +
   theme_classic() +
   ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_co_paper_randeff_forestplot.pdf", 
-         width = 4, height = 6, units = "in", dpi = 300)
-`
+         width = 8, height = 6, units = "in", dpi = 300)
+
 ########################
 # workflow for trait nested in paper number plot
 
@@ -220,4 +222,26 @@ geom_text(
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 2.pdf", fig2,
        width = 4, height = 4, units = "in", dpi = 300)
 
+fig2_all <-ggplot() +
+  # geom_density_ridges(rel_min_height = 0.01, col = NA, 
+  #                     scale = 1, fill = "dodgerblue", alpha = 0.75) +
+  # geom_pointintervalh(data = out_both_sum, size = 4) +
+  geom_dots(data = out_both, aes(x = b_Intercept, y = adaptation, color = adaptation)) +
+  scale_color_manual(values=c("darkgreen", "darkorchid4")) +
+  geom_pointinterval(data = out_both_sum, aes(x= b_Intercept, y = adaptation, xmin = .lower, xmax = .upper), size = 4)+
+  geom_point(data = out_both_sum_med, aes(x =b_Intercept, y =adaptation), shape = 18, size = 4, color = "darkgrey") +
+  geom_text(
+    data = mutate_if(out_both_sum, is.numeric, round, 2),
+    # Use glue package to combine strings
+    aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf, y = adaptation),
+    hjust = "inward", nudge_y = 0.33) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(x = "Effect size", y = NULL) +
+  theme_classic(base_size = 16) +
+  theme(legend.position = "none",
+        axis.text.y = element_text(angle=90, hjust = 0.5))
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Fig_2_all_results.png", fig2_all,
+       width = 6, height = 4, units = "in", dpi = 300)
+  
 
