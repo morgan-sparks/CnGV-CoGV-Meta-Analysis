@@ -33,16 +33,17 @@ raw_dat[,"alt_trait"] <- dplyr::recode(raw_dat$Trait,
                                   "growth rate thickness" = "growth_rate", "growth rate weight" = "growth_rate", "shell growth" = "growth_rate", "shell length growth" = "growth_rate", #growth
                                   "shell mass growth" = "growth_rate", "shell thickness growth" = "growth_rate", "Growth" = "growth_rate", #growth
                                   "body shape" = "body_shape", "gape width" = "body_shape", "gill raker length" = "body_shape", "head depth" = "body_shape", "shell thickness" = "body_shape", "snout length" = "body_shape", #body shape
-                                  "body size" = "body_size", "mass" = "body_size", "size at metamorphosis" = "body_size", "weight" =  "body_size", "dry metamorphic weight" = "body_size", # body size
+                                  "adult weight" = "body_size", "pupal weight" = "body_size", "body size" = "body_size", "mass" = "body_size", "size at metamorphosis" = "body_size", "weight" =  "body_size", "dry metamorphic weight" = "body_size", # body size
                                   "bunch of development" = "developmental_rate", "development rate" = "developmental_rate", "development time" = "developmental_rate", "developmental rate" = "developmental_rate",  "Incubation time" = "developmental_rate", #developmental rate
                                   "carotenoid concentration" = "carotenoid_concentration", # carotenoid concentration
                                   "ciliary activity" = "ciliary_activity", # ciliary activity
                                   "diapause percentage" = "reproductive_rate", "diapause rate" = "reproductive_rate", "spawning interval" = "reproductive_rate", # reproductive rate
                                   "digestion rate" = "metabolic_rate", "energy conversion efficiency" =  "metabolic_rate","food consumption rate" = "metabolic_rate", "food conversion efficiency" = "metabolic_rate",  # metabolic rate
-                                  "metabolic rate" = "metabolic_rate", "phosphate uptake" = "metabolic_rate", "protein efficiency ratio" =  "metabolic_rate","protein production value" = "metabolic_rate",  # metabolic rate
+                                  "metabolic rate" = "metabolic_rate", "metabolism" = "metabolic_rate", "phosphate uptake" = "metabolic_rate", "protein efficiency ratio" =  "metabolic_rate","protein production value" = "metabolic_rate",  # metabolic rate
                                   "respiration" = "metabolic_rate", # metabolic rate
                                   "egg volume" = "gamete_size", "egg weight" = "gamete_size", "ovarian mass" =  "gamete_size",# gamete size
-                                  "flowering time" = "phenology" # phenology
+                                  "flowering time" = "phenology", #phenology
+                                  "righting time" = "thermal_response"
                                   )
 #####----------------
 
@@ -124,15 +125,14 @@ cngv_allES <- OUT
 
 #remove some entries that are GxE determined in "QAQC GxE visual check.R"
 
-cngv_allES <- cngv_allES[-which(cngv_allES$Paper.Name == "Countergradient Variation in Growth Among Newly Hatched Fundulus Heteroclitus: Geographic Differences Revealed by Common-Environment Experiments"
-                                & cngv_allES$Trait == "growth rate dry mass"),]
+cngv_allES <-cngv_allES[-which(cngv_allES$Paper..Authors...Year. == "Brown et al. 1998" & cngv_allES$Trait == "growth rate length" ),]
+cngv_allES <-cngv_allES[-which(cngv_allES$Paper..Authors...Year. == "Grether et al. 2005" & cngv_allES$Experiment.. == "3" ),]
+cngv_allES <-cngv_allES[-which(cngv_allES$Paper..Authors...Year. == "Lindgren and Laurila 2009" & cngv_allES$Trait == "size at metamorphosis"),]
+cngv_allES <-cngv_allES[-which(cngv_allES$Paper..Authors...Year. == "Robinson 2013" & cngv_allES$Trait == "growth rate"),]
+cngv_allES <-cngv_allES[-which(cngv_allES$Paper..Authors...Year. == "Secor et al. 2000" & cngv_allES$Trait == "growth rate"),]
 
-cngv_allES <- cngv_allES[-which(cngv_allES$Paper.Name == "Effect of Temperature and Salinity on Growth Performance in Anadromous (Chesapeake Bay) and Nonanadromous (Santee-Cooper) Strains of Striped Bass Morone saxatilis"
-                                & cngv_allES$Trait == "growth rate"),]
 
-cngv_allES <- cngv_allES[-which(cngv_allES$Paper.Name == "Geographic Variation of Larval Growth in North American Aedes albopictus"
-                                & cngv_allES$Trait == "mass" 
-                                & cngv_allES$Experiment.. == 2),]
+
 
 #write out all effect sizes
 write.csv( cngv_allES, "~/CnGV-CoGV-Meta-analysis/Data/cngv_allES.csv")
@@ -177,16 +177,13 @@ hist(cngv_summary_ES$mean_ES)
 # abs value histogram
 hist(abs(cngv_summary_ES$mean_ES))
 
-# ggplot(cngv_allES) +
-#   geom_vline(xintercept = 0, linetype = "dashed", color = "dodgerblue") +
-#   geom_histogram(aes(x = yi), binwidth = 0.25) +
-#   facet_wrap(~Paper.Name + Trait, scales = "free_x") +
-#   theme_classic(base_size = 10) +
-#   theme(strip.text.x = element_text(size = 6))
+###############################
+# see QAQC GxE visual check.R #
+###############################
 
 # funnel plot for supp materials
 
-funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES)
+#funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES)
 ###############################################################################################
 ##### THIS IS FOR COGV ONLY
 # take raw estimates and break them down to effect sizes for each experiment for each trait (loop 1)
@@ -329,13 +326,9 @@ hist(cogv_summary_ES$mean_ES)
 # abs value histogram
 hist(abs(cogv_summary_ES$mean_ES))
 
-ggplot(cogv_allES) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "dodgerblue") +
-  geom_histogram(aes(x = yi), binwidth = 0.25) +
-  facet_wrap(~Paper.Name + Trait) +
-  theme_classic(base_size = 10) +
-  theme(strip.text.x = element_text(size = 6))
-
+###############################
+# see QAQC GxE visual check.R #
+###############################
 
 ###############################################################################################
 #####
