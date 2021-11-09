@@ -236,6 +236,7 @@ colnames(temp_vcv_mat) <- rownames(temp_vcv_mat)
 fin_temp_dat$Species <- gsub(" ", "_", fin_temp_dat$Species)
 
 fin_temp_dat[which(fin_temp_dat$Species == "Uca_pugilator"),"Species"] <- "Leptuca_pugilator" 
+fin_temp_dat[which(fin_temp_dat$Species == "Idotea_balthica"),"Species"] <- "Idotea_baltica" 
 
 temp_mod <- lme4qtl::relmatLmer(log(abs(temp.mn)) ~  temp_diff + (1|Paper.Name/Trait) + (1|Species),
                                 fin_temp_dat,

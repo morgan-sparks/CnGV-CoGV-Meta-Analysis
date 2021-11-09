@@ -24,6 +24,15 @@ comp_dat <- comp_dat[-which(comp_dat$Paper.Name == "Geographic Variation of Larv
                                 & comp_dat$Trait == "mass" 
                                 & comp_dat$Experiment.. == 2),]
 
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Brown et al. 1998" & comp_dat$Trait == "growth rate length" ),]
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Grether et al. 2005" & comp_dat$Experiment.. == "3" ),]
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Lindgren and Laurila 2009" & comp_dat$Trait == "size at metamorphosis"),]
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Robinson 2013" & comp_dat$Trait == "growth rate"),]
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Secor et al. 2000" & comp_dat$Trait == "growth rate"),]
+
+## remove because it's throwing an error and isn't in this analysis anyway
+comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Gorton et al. 2018" ),]
+
 
 # loop to go in an extract compensation values for every experiment with every trait in every
 # paper, first level iterates over papers, second over traits, third over experiments
@@ -238,23 +247,23 @@ comp_plot_pal <- c("#984464", "#56641a", "#984464")
 
 comp_plot <- ggplot() +
   geom_point(data = over_dat, aes(x = x_index, y = comp_es, color = "over"), alpha =0.25, size = 0.5) +
-  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"), linetype = "dashed",  alpha = 0.25) +
+  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"), linetype = "solid",  alpha = 0.25) +
   geom_point(data = perfect_dat, aes(x = x_index, y = comp_es, color = "perfect"), alpha =0.25, size = 0.5) +
-  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"), linetype = "dashed",  alpha = 0.25) +
+  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"), linetype = "solid",  alpha = 0.25) +
   geom_point(data = under_dat, aes(x = x_index, y = comp_es, color = "under"), alpha =0.25, size = 0.5) +
-  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"), linetype = "dashed",  alpha = 0.25) +
+  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"), linetype = "solid",  alpha = 0.25) +
   geom_point(data = comp_table_zero[c(1,4),],
              aes(x = x_index, y = comp_mean, color = "over"), size =  2) +
   geom_line(data = comp_table_zero[c(1,4),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), linetype = "dashed", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), linetype = "solid", size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(2,5),],
              aes(x = x_index, y = comp_mean, color = "perfect"),  size =  2) +
   geom_line(data = comp_table_zero[c(2,5),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), linetype = "dashed", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), linetype = "solid", size =  1, alpha = 1) +
   geom_point(data = comp_table_zero[c(3,6),],
              aes(x = x_index, y = comp_mean, color = "under"), size =  2) +
   geom_line(data = comp_table_zero[c(3,6),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), linetype = "dashed", size =  1, alpha = 1) +
+            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), linetype = "solid", size =  1, alpha = 1) +
   geom_point(aes(x = 10, y = 0), color = "black", size =  2) +
   geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
   labs(y = "Compensation Effect Size") +
@@ -284,7 +293,6 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4.png", plot = fig
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4_small.png", plot = fig_4_small, width = 1, height = 2.4, units = "in", dpi = 600)
 
-position_jitter(width = .1)
 
 
 #### gord questions plots

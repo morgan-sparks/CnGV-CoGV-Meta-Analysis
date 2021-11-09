@@ -90,14 +90,15 @@ library(tidyverse); library(tidybayes); library(ggridges); library(metafor); lib
 #### same for medium strength priors
 
 mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp.RDS")
+get_variables(mod_metareg_strongprior)
 mod_metareg_strongprior
 
 posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)
 
-posterior_summary(posteriors_sp[1:32])
-posts <- data.frame(posterior_summary(posteriors_sp[1:32]))
+posterior_summary(posteriors_sp[1:34])
+posts <- data.frame(posterior_summary(posteriors_sp[1:34]))
 
-post_sum <-  data.frame(posterior_summary(posteriors_sp[1:32]))
+post_sum <-  data.frame(posterior_summary(posteriors_sp[1:34]))
 
 post_sum <- round(post_sum[,1:4], 3)
 
@@ -105,8 +106,8 @@ post_sum # make sure rounding worked
 
 ### make sure these match names in posterior summary command
 row.names(post_sum) <- c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
-                         "Metabolic rate", "Phenology", "Reproductive rate", "Elevation",
-                         "Latitude", "Migration distance", "Photoperiod", "Salinity", "Shade cover", "Soil phosphate",
+                         "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response","Elevation", 
+                         "Latitude", "Migration distance", "Photoperiod", "Predator", "Salinity", "Shade cover", "Soil phosphate",
                          "Temperature", "Urbanisation", "Wave action",
                          "Amphibia", "Anthaozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
                          "SD Paper Number", "SD Paper Number:Trait", "SD Species"
@@ -170,6 +171,10 @@ phenology <- spread_draws(mod_metareg_strongprior,  b_alt_traitphenology) %>%
   mutate(posterior_val = exp(b_alt_traitphenology),
          variable = "Phenology", covariate = "Trait")
 
+thermal_response <- spread_draws(mod_metareg_strongprior,  b_alt_traitthermal_response) %>%
+  mutate(posterior_val = exp(b_alt_traitthermal_response),
+         variable = "Thermal response", covariate = "Trait")
+
 # Gradients
 elevation <- spread_draws(mod_metareg_strongprior, b_Gradientelevation) %>%
   mutate(posterior_val = exp(b_Gradientelevation),
@@ -186,6 +191,11 @@ migration_distance <- spread_draws(mod_metareg_strongprior,  b_Gradientmigration
 photoperiod <- spread_draws(mod_metareg_strongprior,  b_Gradientphotoperiod) %>%
   mutate(posterior_val = exp(b_Gradientphotoperiod),
          variable = "Photoperiod", covariate = "Gradient")
+
+predator <- spread_draws(mod_metareg_strongprior,  b_Gradientpredator) %>%
+  mutate(posterior_val = exp(b_Gradientpredator),
+         variable = "Predator", covariate = "Gradient")
+
 
 salinity <- spread_draws(mod_metareg_strongprior, b_Gradientsalinity) %>%
   mutate(posterior_val = exp(b_Gradientsalinity),
@@ -267,15 +277,15 @@ reptilia  <-spread_draws(mod_metareg_strongprior,b_ClassReptilia) %>%
 #          variable = "Intercept", covariate = "Intercept")
 
 
-all_draws <- bind_rows(body_shape, body_size, carotenoid_concentration, ciliary_activity, development_rate, gamete_size, growth_rate, 
-                        metabolic_rate, phenology, reproductive_rate, elevation,
-                       latitude, migration_distance, photoperiod, salinity, shade_cover, soil_phosphate,
+all_draws <- bind_rows(body_shape, body_size, carotenoid_concentration, ciliary_activity, development_rate, gamete_size, growth_rate,  
+                        metabolic_rate, phenology, reproductive_rate, thermal_response,
+                       elevation, latitude, migration_distance, photoperiod, predator, salinity, shade_cover, soil_phosphate,
                        temperature, urbanisation, wave_action,
                        amphibia, anthozoa, asteraceae, bivalvia, gastropoda, insecta,liliopsida, malacostraca, reptilia)  %>%
   ungroup() %>% # Ensure that Average effect is on the bottom of the forest plot
   mutate(variable = fct_relevel(variable,c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
-                                           "Metabolic rate", "Phenology", "Reproductive rate", "Elevation",
-                                           "Latitude", "Migration distance","Photoperiod", "Salinity", "Shade cover", "Soil phosphate",
+                                           "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response", "Elevation",
+                                           "Latitude", "Migration distance","Photoperiod", "Predator", "Salinity", "Shade cover", "Soil phosphate",
                                            "Temperature", "Urbanisation", "Wave action",
                                             "Amphibia", "Anthozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia"
                                            )))
@@ -331,4 +341,13 @@ d_ridges + quasi_random
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 3.pdf", quasi_random,
        width = 6, height = 8, units = "in", dpi = 300)
 
+
+##
+metareg_emmeans <- emmeans::emmeans(mod_metareg_strongprior, specs = ~ Class + Gradient + alt_trait)
+metareg_conts <-  emmeans::contrast(metareg_emmeans)
+
+bayestestR::describe_posterior(mod_metareg_strongprior,
+                   estimate = "median", dispersion = TRUE,
+                   ci = .9, ci_method = "hdi",
+                   test = c("bayesfactor"))
 

@@ -37,7 +37,7 @@ out_all <- bind_rows(out_r, out_f) %>%
 out_all_sum <- group_by(out_all,paper_number) %>% 
   mean_qi(b_Intercept)
 
-reorder_object <- c("Average", 1:58)
+reorder_object <- c("Average", 1:65)
 
 ggplot(data = out_all_sum, aes(b_Intercept, factor(paper_number, levels = reorder_object)))+
   geom_density_ridges(data = out_all, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
@@ -97,7 +97,7 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
 
 ### make with cogradient
 
-mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
+mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co_sp.rds.rds")
 get_variables(mod_2randeff_co)
 
 
