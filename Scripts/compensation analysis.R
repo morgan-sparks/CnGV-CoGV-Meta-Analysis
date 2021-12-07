@@ -28,7 +28,6 @@ comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Brown et al. 1998
 comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Grether et al. 2005" & comp_dat$Experiment.. == "3" ),]
 comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Lindgren and Laurila 2009" & comp_dat$Trait == "size at metamorphosis"),]
 comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Robinson 2013" & comp_dat$Trait == "growth rate"),]
-comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Secor et al. 2000" & comp_dat$Trait == "growth rate"),]
 
 ## remove because it's throwing an error and isn't in this analysis anyway
 comp_dat <-comp_dat[-which(comp_dat$Paper..Authors...Year. == "Gorton et al. 2018" ),]
@@ -72,6 +71,7 @@ for(i in levels(comp_dat$Paper.Name)){
 
 
 comp_data_fin <- OUT
+summary(comp_data_fin$comp_es)
 
 #raw differences
 hist(comp_data_fin$comp_diff, main = "Distribution of compensation values", xlab = "Raw Compensation Difference")
@@ -109,12 +109,22 @@ smallES_plot<- ggplot(data = comp_data_fin) +
   theme_classic(base_size = 12)
 
 
-
+### calculations if effect size is 0.5
 overcomp <- nrow(comp_data_fin[which(comp_data_fin$comp_es >.5),])/nrow(comp_data_fin)
 
 undercomp <- nrow(comp_data_fin[which(comp_data_fin$comp_es <(-.5)),])/nrow(comp_data_fin)
 
 perfectcomp <- 1-(overcomp+undercomp)
+
+### calculations if effect size is 0.2
+overcomp_.2 <- nrow(comp_data_fin[which(comp_data_fin$comp_es >.2),])/nrow(comp_data_fin)
+
+undercomp_.2 <- nrow(comp_data_fin[which(comp_data_fin$comp_es <(-.2)),])/nrow(comp_data_fin)
+
+perfectcomp_.2 <- 1-(overcomp_.2+undercomp_.2)
+
+overcomp_.2; undercomp_.2; perfectcomp_.2
+
 
 overcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >.5),"comp_es"])
 undercomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es <(-.5)),"comp_es"])

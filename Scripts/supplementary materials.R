@@ -16,7 +16,7 @@ get_variables(int_mod)
 int_mod_co <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
 
 #metaregression mod for cngv
-metareg_mod <- ("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_metareg_noyear_sp.RDS")
+metareg_mod <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
 
 #model data
 
@@ -88,6 +88,17 @@ int_mod_priors_co[,c(1:4,9)]%>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_co_priors.pdf")
 
+#### priors for cngv int mod
+metareg_priors <- data.frame(metareg_mod$prior)
+
+metareg_priors[2:32,1] <- "normal(0, 1)"
+metareg_priors[35:40,1] <- "cauchy(0, 2)"
+
+metareg_priors[,c(1:4,9)]%>%
+  kbl() %>%
+  kable_classic(full_width = F, html_font = "Times New Roman") %>%
+  save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_priors.pdf")
+
 ################################################################################################
 # table for Stan control variables
 
@@ -121,18 +132,28 @@ int_mods_traceplots <- (int_mod_traceplot + int_mod_co_traceplot)
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mods_traceplots.png", int_mods_traceplots, height = 11, width = 8, units = "in", dpi = 300)
 
+
+# for metareg mod
+get_variables(metareg_mod)
+metareg_mod_tracevars <- get_variables(metareg_mod)[1:34]
+
+metareg_mod_traceplot <- mcmc_trace(metareg_mod, pars = metareg_mod_tracevars, facet_args = list(ncol = 4))
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_mod_traceplot.png", metareg_mod_traceplot, height = 11, width =11, units = "in", dpi = 300)
+
+
 ################################################################################################
 
 ### posterior predictive check for models
 
 # intercept only model for countergradient variation
 
-int_mod_ppcheck <- pp_check(int_mod) + ggtitle(label = "a)")
+int_mod_ppcheck <- pp_check(int_mod) + labs(x = "Effect Size", y = "Frequency")+ theme_classic() + ggtitle(label = "a)")
 
 
 #intercept only model for cogradient variation
 
-int_mod_co_ppcheck <- pp_check(int_mod_co) + ggtitle(label = "b)")
+int_mod_co_ppcheck <- pp_check(int_mod_co) + labs(x = "Effect Size", y = "Frequency")+ theme_classic()+ ggtitle(label = "b)")
 
 #combine two
 int_mods_ppchecks <- int_mod_ppcheck + int_mod_co_ppcheck
@@ -140,6 +161,10 @@ int_mods_ppchecks <- int_mod_ppcheck + int_mod_co_ppcheck
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mods_ppchecks.png", plot = int_mods_ppchecks)
 
 # metaregression model for countergradient variation
+
+metareg_mod_ppcheck <- pp_check(metareg_mod) + labs(x = "Effect Size", y = "Frequency")+ theme_classic()
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metaregmod_ppchecks.png", plot = metareg_mod_ppcheck)
 
 
 

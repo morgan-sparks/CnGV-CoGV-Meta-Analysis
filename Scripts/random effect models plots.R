@@ -97,7 +97,7 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
 
 ### make with cogradient
 
-mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co_sp.rds.rds")
+mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
 get_variables(mod_2randeff_co)
 
 

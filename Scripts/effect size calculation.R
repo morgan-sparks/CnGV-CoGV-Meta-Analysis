@@ -46,6 +46,8 @@ raw_dat[,"alt_trait"] <- dplyr::recode(raw_dat$Trait,
                                   "righting time" = "thermal_response"
                                   )
 #####----------------
+# number of papers analyzed
+levels(raw_dat$Paper..Authors...Year.)
 
 #Turn these to factors to use in loop
 raw_dat$Experiment.. <- as.factor(as.character(raw_dat$Experiment..)) 
@@ -165,6 +167,12 @@ for(i in levels(cngv_allES$Paper.Name)){
 # avg effect size for a trait in a study
 cngv_summary_ES <- OUT2
 
+## assess publication bias
+metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES)
+
+metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES, yaxis = "seinv")
+
+
 ###############################################################################################
 #####
 # cngv QA/QC Plots
@@ -247,6 +255,11 @@ treatment_check
 # object with all effect sizes for every experiment and treatment (loop to bring those into summaries)
 cogv_allES <- OUT
 
+##########
+# number of total calcualted effect sizes
+nrow(cngv_allES) + nrow(cogv_allES)
+##########
+
 temp <- NULL
 temp2 <- NULL
 temp.row <- NULL
@@ -273,6 +286,10 @@ for(i in levels(cogv_allES$Paper.Name)){
 
 # avg effect size for a trait in a study
 cogv_summary_ES <- OUT2
+
+### total number of averaged effect sizes
+
+nrow(cngv_summary_ES) + nrow(cogv_summary_ES)
 ###############################################################################################
 #Trussel and Etter example for discussion in paper
 

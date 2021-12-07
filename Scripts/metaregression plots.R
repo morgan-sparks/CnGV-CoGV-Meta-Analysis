@@ -1,4 +1,4 @@
-library(tidyverse); library(tidybayes); library(ggridges); library(metafor); library(brms); library(glue); library(ggbeeswarm); library(patchwork); library(knitr); library(kableExtra)
+library(tidyverse); library(tidybayes); library(ggridges); library(metafor); library(brms); library(glue); library(ggbeeswarm); library(patchwork); library(knitr); library(kableExtra); library(emmeans)
 
 ###
 # blog post laying out methodology here:
@@ -82,34 +82,158 @@ library(tidyverse); library(tidybayes); library(ggridges); library(metafor); lib
 #   geom_pointinterval(data = all_draws_sum, size = 1)  +
 #   #xlim(-1, 10) +
 #   theme_classic()
-#                                                                                                                                                                                                  
+
+
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
+get_variables(mod_metareg_strongprior)
+mod_metareg_strongprior
+
+posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)
+
+
+posterior_summary(posteriors_sp[1:34])
+
+post_int_sum<-  data.frame(posterior_summary(posteriors_sp[1:34]))
+
+post_int_sum <- round(post_int_sum[,1:4], 3)
+
+post_int_sum # make sure rounding worked
+
+### make sure these match names in posterior summary command
+row.names(post_int_sum) <- c("Intercept", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
+                             "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response","Elevation", 
+                             "Latitude", "Migration distance", "Photoperiod", "Predator presence", "Salinity", "Shade cover", "Soil phosphate",
+                             "Temperature", "Urbanisation", "Wave action",
+                             "Amphibia", "Anthaozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
+                             "SD Paper Number", "SD Paper Number:Trait", "SD Species"
+)
+
+
+#make summary table and send to folder for paper files
+post_int_sum %>% 
+  kbl() %>%
+  kable_classic(full_width = F, html_font = "Times New Roman") %>%
+  save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Table 1 wInt.pdf")
+
+
+####
+
+#gather main effect emmean draws for each covariate
+gradient_emmeans <- emmeans(mod_metareg_strongprior, ~ Gradient) %>% 
+  gather_emmeans_draws() %>% # grab and gather expected marginal means for each draw for all Gradient estimates
+  mutate(covariate = "Gradient") %>%  # add a column full of "Gradients"
+  rename(Variable = Gradient) # rename Gradient column to Variable to combine all later
+
+class_emmeans <- emmeans(mod_metareg_strongprior, ~ Class) %>% # do same for Class
+  gather_emmeans_draws() %>% 
+  mutate(covariate = "Class") %>% 
+  rename(Variable = Class)
+
+trait_emmeans <- emmeans(mod_metareg_strongprior, ~ alt_trait) %>% # do same for alt_trait
+  gather_emmeans_draws() %>% 
+  mutate(covariate = "Trait") %>% 
+  rename(Variable = alt_trait)
+
+## bind and exponentiate emmean draws
+all_emmeans <- bind_rows(trait_emmeans, gradient_emmeans, class_emmeans,) %>% 
+  mutate(.value = exp(.value))
+
+## rename levels
+all_emmeans[,"Variable"] <-  dplyr::recode(all_emmeans$Variable,
+                                           "body_shape"="Body shape", "body_size"="Body size", "carotenoid_concentration" = "Carotenoid concentration", "ciliary_activity"="Ciliary activity", "developmental_rate" = "Developmental rate",
+                                           "gamete_size"= "Gamete size", "growth_rate" = "Growth rate", "metabolic_rate" = "Metabolic rate", "phenology" = "Phenology", "reproductive_rate" = "Reproductive rate",
+                                           "thermal_response" = "Thermal response", "carotenoid availability" = "Carotenoid availability", "elevation" = "Elevation", "latitude" = "Latitude", "migration distance" = "Migration distance",
+                                           "photoperiod" = "Photoperiod", "predator" = "Predator presence", "salinity" = "Salinity", "shade cover" = "Shade cover", "soil phosphate level" = "Soil phosphate level",
+                                           "temperature" = "Temperature", "urbanisation" = "Urbanisation", "wave action" = "Wave action", "Liliopsida " = "Liliopsida"
+                                           )
+
+# reorder factor levels for plot 
+all_emmeans <- all_emmeans %>%  
+  ungroup() %>%
+  mutate(Variable = fct_relevel(Variable,c( "Thermal response","Reproductive rate","Phenology","Metabolic rate","Growth rate","Gamete size","Developmental rate","Ciliary activity","Carotenoid concentration","Body size","Body shape",                 
+                                            "Wave action","Urbanisation","Temperature","Soil phosphate level","Shade cover", "Salinity","Predator presence", "Photoperiod", "Migration distance","Latitude", "Elevation", "Carotenoid availability",   
+                                            "Reptilia", "Malacostraca","Liliopsida", "Insecta","Gastropoda","Bivalvia", "Asteraceae","Anthozoa", "Amphibia","Actinopterygii"
+                                            )))         
+  
+
+
+## calculte summary info for mean and median
+all_emmeans_sum <- group_by(all_emmeans, Variable) %>% 
+  mean_qi(.value)
+all_emmeans_sum_5 <- group_by(all_emmeans, Variable) %>% 
+  mean_qi(.value, .width = .5 )
+
+all_emmeans_sum_med <- group_by(all_emmeans, Variable) %>% 
+  median_qi(.value)
+
+cust_pal <- c("#E6AB02", "#1B9E77", "#7570B3","#66A61E" )
+
+# save full distribution for supplementry materials
+supp_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
+  geom_quasirandom(aes(color= covariate), groupOnX = FALSE, size = 0.01) +
+  geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "grey50", size = 2)  +
+  geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "black", size =4)  +
+  #geom_point(data = all_emmeans_sum_med, aes(.value, Variable), shape = 18, color = "darkgrey", size = 2) +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = 1.03, linetype = "dashed") +
+  geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -.5) +
+  scale_color_manual(values = cust_pal) +
+  labs(y = "", x = "Estimated Marginal Mean") +
+  xlim(-1,55)+
+  theme_classic(base_size = 14) +
+  theme(legend.position = "none") 
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_mod_all.png", supp_fig,
+         width = 6, height = 9, units = "in", dpi = 300)
+
+# save publication figure 3           
+pub_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
+  geom_density_ridges(aes(fill= covariate), rel_min_height = 0.1, col = NA, scale = 1, height = 0.9) +
+  geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "grey50", size = 2)  +
+  geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "black", size =4)  +
+  #geom_point(data = all_emmeans_sum_med, aes(.value, Variable), shape = 18, color = "darkgrey", size = 2) +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = 1.03, linetype = "dashed") +
+  geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.5) +
+  scale_fill_manual(values = cust_pal) +
+  labs(y = "", x = "Effect size") +
+  xlim(-0.5,12)+
+  theme_classic(base_size = 14) +
+  theme(legend.position = "none")
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 3.pdf", pub_fig,
+         width = 6, height = 8, units = "in", dpi = 300)
+
+
 
 ########################################################################
 
 
 #### same for medium strength priors
 
-mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp.RDS")
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
 get_variables(mod_metareg_strongprior)
 mod_metareg_strongprior
 
 posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)
 
-posterior_summary(posteriors_sp[1:34])
-posts <- data.frame(posterior_summary(posteriors_sp[1:34]))
+posts <- data.frame(posterior_summary(posteriors_sp[1:35]))
 
 post_sum <-  data.frame(posterior_summary(posteriors_sp[1:34]))
 
-post_sum <- round(post_sum[,1:4], 3)
+post_sum <- round(post_sum[,1:4], 2)
 
 post_sum # make sure rounding worked
 
+
 ### make sure these match names in posterior summary command
-row.names(post_sum) <- c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
+row.names(post_sum) <- c("Intercept", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
                          "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response","Elevation", 
-                         "Latitude", "Migration distance", "Photoperiod", "Predator", "Salinity", "Shade cover", "Soil phosphate",
+                         "Latitude", "Migration distance", "Photoperiod", "Predator presence", "Salinity", "Shade cover", "Soil phosphate",
                          "Temperature", "Urbanisation", "Wave action",
-                         "Amphibia", "Anthaozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
+                         "Amphibia", "Anthozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
                          "SD Paper Number", "SD Paper Number:Trait", "SD Species"
                          )
 
@@ -324,7 +448,7 @@ quasi_random <- ggplot(data = all_draws, aes(posterior_val, variable))+
   geom_pointinterval(data = all_draws_sum, aes(posterior_val, variable, xmin = .lower, xmax = .upper ), color = "black", size = 1)  +
   geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "darkgrey", size = 2) +
   geom_vline(xintercept = 0) +
-  geom_vline(xintercept = 1.01, linetype = "dashed") +
+  geom_vline(xintercept = 1.03, linetype = "dashed") +
   geom_text(data = mutate_if(all_draws_sum, is.numeric, round, 2),
             aes(label = glue("{posterior_val} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -.5) +
   scale_color_manual(values = cust_pal) +
@@ -338,16 +462,25 @@ quasi_random <- ggplot(data = all_draws, aes(posterior_val, variable))+
 
 d_ridges + quasi_random
 
-ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 3.pdf", quasi_random,
-       width = 6, height = 8, units = "in", dpi = 300)
 
 
-##
-metareg_emmeans <- emmeans::emmeans(mod_metareg_strongprior, specs = ~ Class + Gradient + alt_trait)
-metareg_conts <-  emmeans::contrast(metareg_emmeans)
 
-bayestestR::describe_posterior(mod_metareg_strongprior,
-                   estimate = "median", dispersion = TRUE,
-                   ci = .9, ci_method = "hdi",
-                   test = c("bayesfactor"))
+quasi_random_all <- ggplot(data = all_draws, aes(posterior_val, variable))+
+  geom_quasirandom(aes(color= covariate), groupOnX = FALSE, size = 0.1) +
+  geom_pointinterval(data = all_draws_sum, aes(posterior_val, variable, xmin = .lower, xmax = .upper ), color = "black", size = 1)  +
+  geom_point(data = all_draws_sum_med, aes(posterior_val, variable), shape = 18, color = "darkgrey", size = 2) +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = 1.03, linetype = "dashed") +
+  geom_text(data = mutate_if(all_draws_sum, is.numeric, round, 2),
+            aes(label = glue("{posterior_val} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -.5) +
+  scale_color_manual(values = cust_pal) +
+  labs(y = "", x = "Effect size") +
+  theme_classic(base_size = 14) +
+  theme(legend.position = "none")
+
+
+
+
+
+
 

@@ -298,10 +298,10 @@ dist_reg <- ggplot(delta_grad_dat) +
 
 ###  plot of all
 
-figS1<- dist_reg + temp_reg
+figS7<- dist_reg + temp_reg
 
-ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Figure S1.pdf", figS1,
-       width = 6, height = 4, units = "in", dpi = 300)
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Figure S7.pdf", figS7,
+       width = 8, height = 4, units = "in", dpi = 300)
 
 
 
