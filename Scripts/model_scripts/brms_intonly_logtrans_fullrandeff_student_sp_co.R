@@ -24,7 +24,7 @@ real_model_data_trait$Species <- as.factor(real_model_data_trait$Species)
 #abs val of effect size, only care about magnitude of effect
 real_model_data_trait$mean_ES <- abs(real_model_data_trait$mean_ES)
 
-### recode Paper.Name into study number to help some downstream analyses (R is struggling with some 
+### recode Paper.Name into study number to help some downstream analyses (R is struggling with some
 # names with non-standard English punctuation)
 
 paper_number <- as.integer(as.factor(real_model_data_trait$Paper.Name))
@@ -35,13 +35,13 @@ real_model_data_trait <- cbind(paper_number, real_model_data_trait)
 priors <- c(prior(normal(0,2), class = Intercept),
             prior(cauchy(0,2), class = sd))
 
-# run model 
+# run model
 
-mod_norm_logtrans_trait_co<- 
+mod_norm_logtrans_trait_co<-
   brm(log(mean_ES) | se(var_ES/sqrt(samp.size_ES)) # log of mean ES to normalize, |se() weights the on standard error of measurement (convention for meta-analysis)
       ~ 1 + # intercept only model
         (1|paper_number/Trait) + # trait nested in paper random effect
-        (1|gr(Species, cov = vcv_mat)), # phylogenetic random effect 
+        (1|gr(Species, cov = vcv_mat)), # phylogenetic random effect
       data = real_model_data_trait,
       data2 = list(vcv_mat = vcv_mat), # var-cov for phylogentic random effect
       family = student(),
@@ -58,5 +58,3 @@ saveRDS(mod_norm_logtrans_trait_co, "mod_norm_logtrans_trait_2randeff_student_co
 
 
 sessionInfo()
-
-# type here and save
