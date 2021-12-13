@@ -217,10 +217,13 @@ geom_text(
   labs(x = "Effect size", y = NULL) +
   theme_classic(base_size = 16) +
   theme(legend.position = "none",
-        axis.text.y = element_text(angle=90, hjust = 0.5))
+        axis.text.y = element_text(angle=90, hjust = 0.5),
+        panel.background = element_rect(fill = "white"),
+        plot.margin = margin(1, 1, 1, 1, "cm"),
+        plot.background = element_rect(fill = "white"))
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 2.pdf", fig2,
-       width = 4, height = 4, units = "in", dpi = 300)
+       width = 5, height = 5, units = "in", dpi = 600)
 
 fig2_all <-ggplot() +
   # geom_density_ridges(rel_min_height = 0.01, col = NA, 
@@ -240,6 +243,7 @@ fig2_all <-ggplot() +
   theme_classic(base_size = 16) +
   theme(legend.position = "none",
         axis.text.y = element_text(angle=90, hjust = 0.5))
+
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Fig_2_all_results.png", fig2_all,
        width = 6, height = 4, units = "in", dpi = 300)

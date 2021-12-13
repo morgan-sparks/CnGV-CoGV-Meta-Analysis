@@ -177,15 +177,15 @@ supp_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
   geom_vline(xintercept = 0) +
   geom_vline(xintercept = 1.03, linetype = "dashed") +
   geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
-            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -.5) +
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = 0) +
   scale_color_manual(values = cust_pal) +
   labs(y = "", x = "Estimated Marginal Mean") +
   xlim(-1,55)+
   theme_classic(base_size = 14) +
-  theme(legend.position = "none") 
+  theme(legend.position = "none")
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_mod_all.png", supp_fig,
-         width = 6, height = 9, units = "in", dpi = 300)
+         width = 7, height = 7, units = "in", dpi = 600)
 
 # save publication figure 3           
 pub_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
@@ -196,15 +196,18 @@ pub_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
   geom_vline(xintercept = 0) +
   geom_vline(xintercept = 1.03, linetype = "dashed") +
   geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
-            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.5) +
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.25) +
   scale_fill_manual(values = cust_pal) +
-  labs(y = "", x = "Effect size") +
+  labs(y = "", x = "Estimated Marginal Mean") +
   xlim(-0.5,12)+
   theme_classic(base_size = 14) +
-  theme(legend.position = "none")
+  theme(legend.position = "none",,
+        panel.background = element_rect(fill = "white"),
+        plot.margin = margin(1, 1, 1, 1, "cm"),
+        plot.background = element_rect(fill = "white"))
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 3.pdf", pub_fig,
-         width = 6, height = 8, units = "in", dpi = 300)
+         width = 6, height = 8, units = "in", dpi = 600)
 
 
 

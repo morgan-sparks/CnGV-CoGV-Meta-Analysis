@@ -130,7 +130,7 @@ int_mod_co_traceplot <- mcmc_trace(int_mod_co, pars = int_mod_co_tracevars, face
 
 int_mods_traceplots <- (int_mod_traceplot + int_mod_co_traceplot) 
 
-ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mods_traceplots.png", int_mods_traceplots, height = 11, width = 8, units = "in", dpi = 300)
+ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mods_traceplots.png", int_mods_traceplots, height = 8, width = 8, units = "in", dpi = 600)
 
 
 # for metareg mod
