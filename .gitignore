@@ -4,9 +4,9 @@
 .Ruserdata
 Data/model_output/
 Scripts/random-effects-formatting.html
-Scripts/bayesian\ significance\ testing.R
-Scripts/make\ phylo\ tree.R
-Scripts/random\ effects\ formatting.Rmd
+Scripts/bayesian_significance_testing.R
+Scripts/make_phylo_tree.R
+Scripts/random_effects_formatting.Rmd
 Scripts/timetree_species_varcovmat.R
-Scripts/cluster\ model\ checks.R
+Scripts/cluster_model_checks.R
 Scripts/Meta-Analysis.R
