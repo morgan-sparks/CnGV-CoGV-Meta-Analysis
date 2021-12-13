@@ -10,3 +10,6 @@ Scripts/random_effects_formatting.Rmd
 Scripts/timetree_species_varcovmat.R
 Scripts/cluster_model_checks.R
 Scripts/Meta-Analysis.R
+Scripts/metaregression.R
+Scripts/brmrs_intonly_logtrans_fullrandeff.R
+
