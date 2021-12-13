@@ -12,4 +12,5 @@ Scripts/cluster_model_checks.R
 Scripts/Meta-Analysis.R
 Scripts/metaregression.R
 Scripts/brmrs_intonly_logtrans_fullrandeff.R
-
+Scripts/model_scripts/brms_intonly_logtrans_fullrandeff_student.R
+Scripts/model_scripts/brms_intonly_logtrans_fullrandeff_student_co.R
