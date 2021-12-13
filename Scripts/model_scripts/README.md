@@ -8,7 +8,7 @@ brms_intonly_logtrans_fullrandeff_student_sp.R
 
 ### Random intercept model for cogradient variation
 
-brms_intonly_logtrans_fullrandeff_student_co.R
+brms_intonly_logtrans_fullrandeff_student_sp_co.R
 
 ### Metaregression model for countergradient variation
 
