@@ -1,87 +1,16 @@
+################################################################################################
+# Morgan Sparks, sparks35@purdue.edu, December 2021
+# 
+# Script to make metaregression plot for manuscript. It uses the emmeans package and a variety
+# of bayesian plotting tools to make emmean posterior distributions for metaregression model.
+################################################################################################
+
 library(tidyverse); library(tidybayes); library(ggridges); library(metafor); library(brms); library(glue); library(ggbeeswarm); library(patchwork); library(knitr); library(kableExtra); library(emmeans)
 
 ###
 # blog post laying out methodology here:
 # https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/forest-plots-for-bayesian-meta-analysis.html
 ###
-
-### load model
-# 
-# metareg_mod <- readRDS("~/Dropbox/PhD Work/Critical Review/Data/model output/mod_metareg_sp.RDS")
-# 
-# metareg_mod
-# 
-# ### look at posteriors
-# 
-# #exponentiate because log transformed in model
-# posteriors <- exp(posterior_samples(metareg_mod))
-# 
-# posterior_summary(posteriors[1:35])
-# 
-# ### get variables
-# 
-# head(get_variables(metareg_mod), n = 30) # get fixed effect variable names
-# 
-# fixed_eff_list <- get_variables(metareg_mod)[1:20] # make a list of all variables to use
-# fixed_eff_list <- as.factor(fixed_eff_list)
-# fixed_eff_list # look at list
-# 
-# traits_result <- NULL
-# temp_result <- NULL
-# for (i in 2:8){
-#  temp_result <- spread_draws(metareg_mod, b_Intercept,fixed_eff_list[[i]]) %>%
-#    mutate(posterior_val = exp(b_Intercept) + exp(fixed_eff_list[[i]]),
-#            variable = gsub(pattern = "b_alt_trait", replacement = "", x =fixed_eff_list[i]))
-# 
-#  traits_result <- bind_rows(traits_result, temp_result)
-# }
-# 
-# for (i in fixed_eff_list[2:8]){
-#   print(i)
-#   print(gsub(pattern = "b_alt_trait", replacement = "", x =i))
-# }
-# 
-# test <- metareg_mod %>%
-#   gather_draws(exp(c(b_alt_traitciliaryactivity,
-#                 b_alt_traitdevelopmentalrate,
-#                 b_alt_traitgonadalsize,
-#                 b_alt_traitgrowthrate,
-#                 b_alt_traitmass,
-#                 b_alt_traitmetabolicrate,
-#                 b_alt_traitreproductiverate))) %>%
-#   mean_qi()
-# 
-# ###
-# 
-# ciliary_activity <- spread_draws(metareg_mod, b_Intercept, b_alt_traitciliaryactivity) %>%
-#   mutate(posterior_val = exp(b_Intercept) + exp(b_alt_traitciliaryactivity),
-#          variable = "Ciliary activity")
-# 
-# development_rate <- spread_draws(metareg_mod, b_Intercept, b_alt_traitdevelopmentalrate) %>%
-#   mutate(posterior_val = exp(b_Intercept) + exp(b_alt_traitdevelopmentalrate),
-#          variable = "Developmental rate")
-# 
-# gonadal_size <- spread_draws(metareg_mod, b_Intercept, b_alt_traitgonadalsize) %>%
-#   mutate(posterior_val = exp(b_Intercept) + exp(b_alt_traitgonadalsize),
-#          variable = "Gonadal size")
-# 
-# beta_intercept <- spread_draws(metareg_mod, b_Intercept) %>%
-#   mutate(posterior_val = exp(b_Intercept),
-#          variable = "Intercept")
-#                                                                                                                                                                                                                
-#   
-# all_draws <- bind_rows(ciliary_activity, development_rate, gonadal_size, beta_intercept) %>% 
-#   ungroup() %>% # Ensure that Average effect is on the bottom of the forest plot
-#   mutate(variable = fct_relevel(variable, "Intercept"))
-#              
-# all_draws_sum <- group_by(all_draws, variable) %>% 
-#   mean_qi(posterior_val)
-# 
-# ggplot(data = all_draws, aes(posterior_val, variable))+
-#   geom_density_ridges(rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
-#   geom_pointinterval(data = all_draws_sum, size = 1)  +
-#   #xlim(-1, 10) +
-#   theme_classic()
 
 
 mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
@@ -212,6 +141,13 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/F
 
 
 ########################################################################
+
+
+###############
+# below is doing the same but for model coefficients
+# it is not presented in manuscript
+
+###############
 
 
 #### same for medium strength priors

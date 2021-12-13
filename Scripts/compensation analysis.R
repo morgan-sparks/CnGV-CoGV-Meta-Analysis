@@ -125,7 +125,7 @@ perfectcomp_.2 <- 1-(overcomp_.2+undercomp_.2)
 
 overcomp_.2; undercomp_.2; perfectcomp_.2
 
-
+### make a table for understanding how frequent each type of compensation is
 overcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >.5),"comp_es"])
 undercomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es <(-.5)),"comp_es"])
 perfectcomp_mean <- mean(comp_data_fin[which(comp_data_fin$comp_es >=(-.5) & comp_data_fin$comp_es <=.5),"comp_es"])
@@ -138,6 +138,8 @@ comp_table <- data.frame(proportion, compensation, comp_mean)
 comp_table$proportion <- round(comp_table$proportion, 3)
 comp_table
 
+
+## visualize table
 comp_plot <- ggplot(data = comp_table) +
   geom_bar(aes(x =compensation, y = proportion), 
            stat = "identity", fill = "darkorchid4", color = "black", width = .5, size =.25) + 
@@ -149,7 +151,108 @@ comp_plot <- ggplot(data = comp_table) +
 
 
 
-#fig5 <- fullES_plot + inset_element(comp_plot, left = 0.01, bottom = 0.6, right = 0.6, top = .95)
+####################
+
+### make data into a formate needed for fig 4, (basically add more rows with zero so we can have sloped lines)
+
+over_dat <- comp_data_fin[which(comp_data_fin$comp_es > 0.5),]
+over_dat <- rbind(over_dat, over_dat)
+over_dat <- cbind(over_dat, 
+                  x_index = c(rep(0, nrow(over_dat)/2), rep(10, nrow(over_dat)/2)),
+                  study_index = rep(1:(nrow(over_dat)/2), 2)
+                  )
+over_dat[((nrow(over_dat)/2)+1):nrow(over_dat), "comp_es"] <- 0
+
+perfect_dat <- comp_data_fin[which(comp_data_fin$comp_es <= 0.5 & comp_data_fin$comp_es >= -0.5),]
+perfect_dat <- rbind(perfect_dat, perfect_dat)
+perfect_dat <- cbind(perfect_dat, 
+                  x_index = c(rep(0, nrow(perfect_dat)/2), rep(10, nrow(perfect_dat)/2)),
+                  study_index = rep(1:(nrow(perfect_dat)/2), 2)
+)
+perfect_dat[((nrow(perfect_dat)/2)+1):nrow(perfect_dat), "comp_es"] <- 0
+
+under_dat <- comp_data_fin[which(comp_data_fin$comp_es < -0.5),]
+under_dat <- rbind(under_dat, under_dat)
+under_dat <- cbind(under_dat, 
+                     x_index = c(rep(0, nrow(under_dat)/2), rep(10, nrow(under_dat)/2)),
+                     study_index = rep(1:(nrow(under_dat)/2), 2)
+)
+under_dat[((nrow(under_dat)/2)+1):nrow(under_dat), "comp_es"] <- 0
+
+
+############
+
+#make fig 4
+
+# color pallette from http://tsitsul.in/blog/coloropt/
+
+comp_plot_pal <- c("#984464", "#56641a", "#984464")
+
+comp_plot <- ggplot() +
+  geom_point(data = over_dat, aes(x = x_index, y = comp_es, color = "over"), alpha =0.25, size = 0.5) +
+  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"), linetype = "solid",  alpha = 0.25) +
+  geom_point(data = perfect_dat, aes(x = x_index, y = comp_es, color = "perfect"), alpha =0.25, size = 0.5) +
+  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"), linetype = "solid",  alpha = 0.25) +
+  geom_point(data = under_dat, aes(x = x_index, y = comp_es, color = "under"), alpha =0.25, size = 0.5) +
+  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"), linetype = "solid",  alpha = 0.25) +
+  geom_point(data = comp_table_zero[c(1,4),],
+             aes(x = x_index, y = comp_mean, color = "over"), size =  2) +
+  geom_line(data = comp_table_zero[c(1,4),],
+            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), linetype = "solid", size =  1, alpha = 1) +
+  geom_point(data = comp_table_zero[c(2,5),],
+             aes(x = x_index, y = comp_mean, color = "perfect"),  size =  2) +
+  geom_line(data = comp_table_zero[c(2,5),],
+            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), linetype = "solid", size =  1, alpha = 1) +
+  geom_point(data = comp_table_zero[c(3,6),],
+             aes(x = x_index, y = comp_mean, color = "under"), size =  2) +
+  geom_line(data = comp_table_zero[c(3,6),],
+            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), linetype = "solid", size =  1, alpha = 1) +
+  geom_point(aes(x = 10, y = 0), color = "black", size =  2) +
+  geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
+  labs(y = "Compensation Effect Size") +
+  scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
+  theme_classic(base_size = 12) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.position = "NULL")
+
+comp_plot_small <- comp_plot + ylim(-15,7)
+
+(comp_plot + theme(legend.position = "none")) / (comp_plot_small + theme(legend.position = "none"))
+
+fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
+  # inset_element((comp_plot + labs(y = NULL) + theme(legend.position = "none"))
+  #                ,left = 0.5, bottom = 0.01, right = .8, top = .35)
+
+fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
+fig_4
+
+fig_4_small <- comp_plot + labs(y = NULL) + theme(legend.position = "none")
+fig_4_small
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4.png", plot = fig_4, width = 1.8, height = 6, units = "in", dpi = 600)
+
+
+ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4_small.png", plot = fig_4_small, width = 1, height = 2.4, units = "in", dpi = 600)
+
+
+######################################################################################################
+
+### below is just extra plotting done, it was not used in the anlysis and can be ignored
+
+
+
+
+
+
+
+
+
+
+
+
+# makes the plot for fig4
 
 fig5 <- fullES_plot + (smallES_plot / comp_plot)
 
@@ -226,83 +329,6 @@ comp_table_zero <- rbind(comp_table, comp_table_zero)
 #         axis.ticks.x=element_blank())
 
 #######################
-
-over_dat <- comp_data_fin[which(comp_data_fin$comp_es > 0.5),]
-over_dat <- rbind(over_dat, over_dat)
-over_dat <- cbind(over_dat, 
-                  x_index = c(rep(0, nrow(over_dat)/2), rep(10, nrow(over_dat)/2)),
-                  study_index = rep(1:(nrow(over_dat)/2), 2)
-                  )
-over_dat[((nrow(over_dat)/2)+1):nrow(over_dat), "comp_es"] <- 0
-
-perfect_dat <- comp_data_fin[which(comp_data_fin$comp_es <= 0.5 & comp_data_fin$comp_es >= -0.5),]
-perfect_dat <- rbind(perfect_dat, perfect_dat)
-perfect_dat <- cbind(perfect_dat, 
-                  x_index = c(rep(0, nrow(perfect_dat)/2), rep(10, nrow(perfect_dat)/2)),
-                  study_index = rep(1:(nrow(perfect_dat)/2), 2)
-)
-perfect_dat[((nrow(perfect_dat)/2)+1):nrow(perfect_dat), "comp_es"] <- 0
-
-under_dat <- comp_data_fin[which(comp_data_fin$comp_es < -0.5),]
-under_dat <- rbind(under_dat, under_dat)
-under_dat <- cbind(under_dat, 
-                     x_index = c(rep(0, nrow(under_dat)/2), rep(10, nrow(under_dat)/2)),
-                     study_index = rep(1:(nrow(under_dat)/2), 2)
-)
-under_dat[((nrow(under_dat)/2)+1):nrow(under_dat), "comp_es"] <- 0
-
-# color pallette from http://tsitsul.in/blog/coloropt/
-
-comp_plot_pal <- c("#984464", "#56641a", "#984464")
-
-comp_plot <- ggplot() +
-  geom_point(data = over_dat, aes(x = x_index, y = comp_es, color = "over"), alpha =0.25, size = 0.5) +
-  geom_line(data = over_dat, aes(x = x_index, y = comp_es, group = study_index, color = "over"), linetype = "solid",  alpha = 0.25) +
-  geom_point(data = perfect_dat, aes(x = x_index, y = comp_es, color = "perfect"), alpha =0.25, size = 0.5) +
-  geom_line(data = perfect_dat, aes(x = x_index, y = comp_es, group = study_index, color = "perfect"), linetype = "solid",  alpha = 0.25) +
-  geom_point(data = under_dat, aes(x = x_index, y = comp_es, color = "under"), alpha =0.25, size = 0.5) +
-  geom_line(data = under_dat, aes(x = x_index, y = comp_es, group = study_index, color = "under"), linetype = "solid",  alpha = 0.25) +
-  geom_point(data = comp_table_zero[c(1,4),],
-             aes(x = x_index, y = comp_mean, color = "over"), size =  2) +
-  geom_line(data = comp_table_zero[c(1,4),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "over"), linetype = "solid", size =  1, alpha = 1) +
-  geom_point(data = comp_table_zero[c(2,5),],
-             aes(x = x_index, y = comp_mean, color = "perfect"),  size =  2) +
-  geom_line(data = comp_table_zero[c(2,5),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "perfect"), linetype = "solid", size =  1, alpha = 1) +
-  geom_point(data = comp_table_zero[c(3,6),],
-             aes(x = x_index, y = comp_mean, color = "under"), size =  2) +
-  geom_line(data = comp_table_zero[c(3,6),],
-            aes(x = x_index, y = comp_mean, group = study_index, color = "under"), linetype = "solid", size =  1, alpha = 1) +
-  geom_point(aes(x = 10, y = 0), color = "black", size =  2) +
-  geom_hline(yintercept = c(-0.5, 0.5), linetype = 'dashed', color = "black") +
-  labs(y = "Compensation Effect Size") +
-  scale_color_manual(values = c("over"="#5eccab", "perfect" = "#56641a", "under" = "#984464")) +
-  theme_classic(base_size = 12) +
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        legend.position = "NULL")
-
-comp_plot_small <- comp_plot + ylim(-15,7)
-
-(comp_plot + theme(legend.position = "none")) / (comp_plot_small + theme(legend.position = "none"))
-
-fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
-  # inset_element((comp_plot + labs(y = NULL) + theme(legend.position = "none"))
-  #                ,left = 0.5, bottom = 0.01, right = .8, top = .35)
-
-fig_4 <- (comp_plot_small + theme(legend.position = "none")) 
-fig_4
-
-fig_4_small <- comp_plot + labs(y = NULL) + theme(legend.position = "none")
-fig_4_small
-
-ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4.png", plot = fig_4, width = 1.8, height = 6, units = "in", dpi = 600)
-
-
-ggsave("~/Dropbox/PhD Work/Critical Review/Paper and Figs/Fig_4_small.png", plot = fig_4_small, width = 1, height = 2.4, units = "in", dpi = 600)
-
 
 
 #### gord questions plots

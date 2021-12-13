@@ -1,3 +1,9 @@
+################################################################################################
+# Morgan Sparks, sparks35@purdue.edu, July 2021
+# 
+# Script to make maps used in fig1
+################################################################################################
+
 setwd("~/Dropbox/PhD Work/Critical Review")
 library(ggplot2)
 library(ggmap) 

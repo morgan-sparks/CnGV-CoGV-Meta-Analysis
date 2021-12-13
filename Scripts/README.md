@@ -31,9 +31,6 @@ Run the same random effects and metaregression models in frequentist framework w
 ### Critical Review Map.R
 R script to create map in fig. 1
 
-### bayesian significance testing.R
-bayesian significance testing for random effects and metaregression models. Results in supplementary materials.
-
 ### compensation analysis.R
 Script for compensation analysis (Fig. 5)
 
@@ -55,5 +52,3 @@ Script to take .rds file from counter- and cogradient random effects models and 
 ### supplementary materials.R
 Script to create many supplementary materials not included in the other scripts here
 
-### random effects formatting.Rmd
-Very short script to print formatting for random effects structure in all models

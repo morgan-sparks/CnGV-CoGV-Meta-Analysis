@@ -167,10 +167,11 @@ for(i in levels(cngv_allES$Paper.Name)){
 # avg effect size for a trait in a study
 cngv_summary_ES <- OUT2
 
-## assess publication bias
-metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES)
-
-metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES, yaxis = "seinv")
+## assess publication bias (doesn't really work right because we are measuring effect here is arbitrary--e.g.
+## positive and negative effects are both the same in our approach)
+# metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES)
+# 
+# metafor::funnel(cngv_summary_ES$mean_ES, cngv_summary_ES$var_ES, yaxis = "seinv")
 
 
 ###############################################################################################

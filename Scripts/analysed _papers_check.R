@@ -1,4 +1,8 @@
-library(readxl)
+############################################################################################################################
+# Morgan Sparks, msparks1309@gmail.com, December 2021
+# 
+# This script just checks that we have analysed all papers from all sources and we haven't missed any.
+############################################################################################################################library(readxl)
 
 # wos search
 wos <- read_excel("~/CnGV-CoGV-Meta-analysis/Data/QAQC/data_check.xlsx", sheet = "WoS Search")

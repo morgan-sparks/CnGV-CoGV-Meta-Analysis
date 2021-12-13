@@ -1,4 +1,11 @@
-library(tidybayes); library(ggridges); library(tidyverse); library(metafor); library(brms); library(forcats)
+################################################################################################
+# Morgan Sparks, sparks35@purdue.edu, December 2021
+# 
+# Script to make randome effects plots for manuscript. It uses the tidybayes package to gather 
+# draws to plot posterior distributions for model coefficients.
+################################################################################################
+
+ibrary(tidybayes); library(ggridges); library(tidyverse); library(metafor); library(brms); library(forcats)
 
 ################################################################################################
 #` plots for CnGV
@@ -39,6 +46,7 @@ out_all_sum <- group_by(out_all,paper_number) %>%
 
 reorder_object <- c("Average", 1:65)
 
+## forest plot for papers
 ggplot(data = out_all_sum, aes(b_Intercept, factor(paper_number, levels = reorder_object)))+
   geom_density_ridges(data = out_all, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
   geom_pointintervalh( size = 1) +
@@ -75,6 +83,8 @@ out_all$paper.number.trait <- as.factor(out_all$paper.number.trait)
 
 out_all_sum <- group_by(out_all,paper.number.trait) %>% 
   mean_qi(b_Intercept)
+
+## forest plot for trat nested in paper
 
 ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
   geom_density_ridges(data = out_all, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
@@ -129,6 +139,8 @@ out_all_sum_co <- group_by(out_all_co, paper_number) %>%
 
 reorder_object_co <- c("Average", 1:15)
 
+# forest plot for paper
+
 ggplot(data = out_all_sum_co, aes(b_Intercept, factor(paper_number, levels = reorder_object_co)))+
   geom_density_ridges(data = out_all_co, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
   geom_pointintervalh( size = 1) +
@@ -161,6 +173,8 @@ out_all_co <- bind_rows(out_r_co, out_f_co) %>%
 out_all_sum_co <- group_by(out_all_co, paper.number.trait) %>% 
   mean_qi(b_Intercept)
 
+
+# forest plot for trait nested in paper
 ggplot(data = out_all_sum_co, aes(b_Intercept, paper.number.trait))+
   geom_density_ridges(data = out_all_co, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
   geom_pointintervalh( size = 1) +
@@ -198,7 +212,7 @@ out_both_sum_med <- bind_rows(out_cn, out_co) %>%
   group_by(adaptation) %>%
   median_qi(b_Intercept)
 
-
+## plot for fig 2 in manuscript
 fig2 <- ggplot() +
   # geom_density_ridges(rel_min_height = 0.01, col = NA, 
   #                     scale = 1, fill = "dodgerblue", alpha = 0.75) +
@@ -225,6 +239,7 @@ geom_text(
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Fig. 2.pdf", fig2,
        width = 5, height = 5, units = "in", dpi = 600)
 
+# full version for supplementary materials
 fig2_all <-ggplot() +
   # geom_density_ridges(rel_min_height = 0.01, col = NA, 
   #                     scale = 1, fill = "dodgerblue", alpha = 0.75) +
