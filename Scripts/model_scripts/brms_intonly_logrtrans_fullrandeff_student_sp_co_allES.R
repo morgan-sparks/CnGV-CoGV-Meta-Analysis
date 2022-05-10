@@ -3,7 +3,9 @@ setwd("/scratch/bell/sparks35/CNGV_analysis/output")
 
 ### load in data
 #model data
-real_model_data_trait <-  read.csv("/scratch/bell/sparks35/CNGV_analysis/data/cogv_allES.csv")
+real_model_data_trait <-  read.csv("/scratch/bell/sparks35/CNGV_analysis/data/cogv_model_data_allES.csv")
+
+real_model_data_trait <-  read.csv("./Data//cogv_model_data_allES.csv")
 
 # remove a row of data that didn't have a NCBI entry:
 real_model_data_trait <-  real_model_data_trait[-which(real_model_data_trait$Species == "Warramaba whitei"),]
@@ -22,7 +24,7 @@ real_model_data_trait$Year <- as.numeric(as.character(real_model_data_trait$Year
 real_model_data_trait$Species <- as.factor(real_model_data_trait$Species)
 
 #abs val of effect size, only care about magnitude of effect
-real_model_data_trait$mean_ES <- abs(real_model_data_trait$mean_ES)
+real_model_data_trait$Value <- abs(real_model_data_trait$Value)
 
 ### recode Paper.Name into study number to help some downstream analyses (R is struggling with some
 # names with non-standard English punctuation)
