@@ -5,7 +5,6 @@ setwd("/scratch/bell/sparks35/CNGV_analysis/output")
 #model data
 real_model_data_trait <-  read.csv("/scratch/bell/sparks35/CNGV_analysis/data/cogv_model_data_allES.csv")
 
-real_model_data_trait <-  read.csv("./Data//cogv_model_data_allES.csv")
 
 # remove a row of data that didn't have a NCBI entry:
 real_model_data_trait <-  real_model_data_trait[-which(real_model_data_trait$Species == "Warramaba whitei"),]
