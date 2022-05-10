@@ -256,6 +256,7 @@ treatment_check
 # object with all effect sizes for every experiment and treatment (loop to bring those into summaries)
 cogv_allES <- OUT
 
+write.csv(cogv_allES, "~/CnGV-CoGV-Meta-analysis/Data/cogv_allES.csv")
 ##########
 # number of total calcualted effect sizes
 nrow(cngv_allES) + nrow(cogv_allES)
@@ -287,6 +288,7 @@ for(i in levels(cogv_allES$Paper.Name)){
 
 # avg effect size for a trait in a study
 cogv_summary_ES <- OUT2
+
 
 ### total number of averaged effect sizes
 
