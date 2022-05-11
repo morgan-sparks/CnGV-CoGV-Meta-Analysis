@@ -372,3 +372,21 @@ cogv_model_data <- merge(cogv_summary_ES, meta_data, # merge summary effects wit
 write.csv(cngv_model_data, "~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
 write.csv(cogv_model_data, "~/CnGV-CoGV-Meta-analysis/Data/cogv_model_data.csv")
 
+
+###############################################################################################
+
+####
+# write out all files with all effect sizes
+####
+
+
+cngv_model_data_allES <- merge(cngv_allES, meta_data, # merge summary effects with metadata
+                         by.x = "Paper..Authors...Year.", by.y = "X", #Merge by paper authors/year e.g. Name et al. 2021
+                         all.x = TRUE, all.y = FALSE) # keep all cngv_sumamry_ES rows, use only matching meta_data vals
+
+cogv_model_data_allES <- merge(cogv_allES, meta_data, # merge summary effects with metadata
+                         by.x = "Paper..Authors...Year.", by.y = "X",#Merge by paper authors/year e.g. Name et al. 2021
+                         all.x = TRUE, all.y = FALSE) # keep all cogv_sumamry_ES rows, use only matching meta_data vals
+
+write.csv(cngv_model_data_allES, "~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data_allES.csv")
+write.csv(cogv_model_data_allES, "~/CnGV-CoGV-Meta-analysis/Data/cogv_model_data_allES.csv")
