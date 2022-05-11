@@ -46,8 +46,8 @@ mod_norm_logtrans_trait_co<-
       data = real_model_data_trait,
       data2 = list(vcv_mat = vcv_mat), # var-cov for phylogentic random effect
       family = student(),
-      iter = 10000,
-      warmup = 2500,
+      iter = 5000,
+      warmup = 1250,
       cores = 4,
       thin = 1,
       prior = priors,

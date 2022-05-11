@@ -58,7 +58,7 @@ strong_priors <-  c(prior(normal(0, 1),  "b"),
 mod_metareg_sp <- brm(
   log(Value) |  se(Standard.Deviation/sqrt(Sample.Size))  ~ alt_trait + Gradient + Class + # fixed effects
     (1|paper_number/Trait) + (1 | gr(Species, cov = vcv_mat)), #random effects
-  data = metaregression_data, #data for full model
+  data = real_model_data_trait, #data for full model
   data2 = list(vcv_mat = vcv_mat),
   family = student(),
   thin = 10,
