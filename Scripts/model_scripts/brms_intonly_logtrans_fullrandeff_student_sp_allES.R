@@ -24,6 +24,9 @@ real_model_data_trait[which(real_model_data_trait$Species == "Hyla_cinerea"), "S
 # change Idotea_balthica to updated classification (which it is in vcv_mat from NCBI)
 real_model_data_trait[which(real_model_data_trait$Species == "Idotea_balthica"), "Species"] <- "Idotea_baltica"
 
+# change Uca_pugilator to updated classification (which it is in vcv_mat from NCBI)
+real_model_data_trait[which(real_model_data_trait$Species == "Uca_pugilator"), "Species"] <- "Leptuca_pugilator"
+
 #turn year into continuous variable and species into factor
 real_model_data_trait$Year <- as.numeric(as.character(real_model_data_trait$Year))
 real_model_data_trait$Species <- as.factor(real_model_data_trait$Species)
