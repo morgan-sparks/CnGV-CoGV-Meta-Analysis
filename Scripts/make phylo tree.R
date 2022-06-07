@@ -13,9 +13,11 @@ library(taxize); library(ape) #; library(brranching); library(rotl)
 ### First do for cngv data
 
 ### load data with species names and turn column with species names into characters
-trait_level_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
-species_list <- as.character(trait_level_data$Species)
+# trait_level_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data.csv")
+# species_list <- as.character(trait_level_data$Species)
 
+allES_level_data <- read.csv("~/CnGV-CoGV-Meta-analysis/Data/cngv_model_data_allES.csv")
+species_list <- as.character(allES_level_data$Species)
 ### remove duplicate species names
 species_list <- species_list[!duplicated(species_list)]
 

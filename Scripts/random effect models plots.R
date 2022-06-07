@@ -5,12 +5,19 @@
 # draws to plot posterior distributions for model coefficients.
 ################################################################################################
 
-ibrary(tidybayes); library(ggridges); library(tidyverse); library(metafor); library(brms); library(forcats)
+library(tidybayes); library(ggridges); library(tidyverse); library(metafor); library(brms); library(forcats)
+
+#### setwd
+
+
+
+
 
 ################################################################################################
 #` plots for CnGV
 
 mod_2randeff <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
+mod_2randeff <- readRDS("./mod_norm_logtrans_trait_2randeff_student_sp_allES.rds")
 get_variables(mod_2randeff)
 ### see for example https://github.com/mvuorre/brmstools
 
@@ -84,7 +91,7 @@ out_all$paper.number.trait <- as.factor(out_all$paper.number.trait)
 out_all_sum <- group_by(out_all,paper.number.trait) %>% 
   mean_qi(b_Intercept)
 
-## forest plot for trat nested in paper
+## forest plot for trait nested in paper
 
 ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
   geom_density_ridges(data = out_all, rel_min_height = 0.01, col = NA, scale = 1, fill = "dodgerblue", alpha = 0.75) +
@@ -108,6 +115,7 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
 ### make with cogradient
 
 mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
+mod_2randeff_co <- readRDS("./mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
 get_variables(mod_2randeff_co)
 
 

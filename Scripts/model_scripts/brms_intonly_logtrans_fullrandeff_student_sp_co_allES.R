@@ -39,7 +39,7 @@ priors <- c(prior(normal(0,2), class = Intercept),
 # run model
 
 mod_norm_logtrans_trait_co<-
-  brm(log(Value) | se(Standard.Deviation/sqrt(Sample.Size)) # log of mean ES to normalize, |se() weights the on standard error of measurement (convention for meta-analysis)
+  brm(log(abs(yi)) | se(Standard.Deviation/sqrt(Sample.Size)) # log of mean ES to normalize, |se() weights the on standard error of measurement (convention for meta-analysis)
       ~ 1 + # intercept only model
         (1|paper_number/Trait) + # trait nested in paper random effect
         (1|gr(Species, cov = vcv_mat)), # phylogenetic random effect
@@ -55,7 +55,7 @@ mod_norm_logtrans_trait_co<-
 
 summary(mod_norm_logtrans_trait_co)
 
-saveRDS(mod_norm_logtrans_trait_co, "mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
+saveRDS(mod_norm_logtrans_trait_co, "mod_norm_logtrans_trait_2randeff_student_co_sp_allES_correct.rds")
 
 
 sessionInfo()
