@@ -255,6 +255,8 @@ for(i in levels(raw_dat_cogv$Paper.Name)){
 treatment_check
 # object with all effect sizes for every experiment and treatment (loop to bring those into summaries)
 cogv_allES <- OUT
+cogv_allES[which(cogv_allES$yi == 0),"yi"] <- 1e-20 # change this to a very small numer because we log tranform later and the model can't handle that
+
 
 write.csv(cogv_allES, "~/CnGV-CoGV-Meta-analysis/Data/cogv_allES.csv")
 ##########
