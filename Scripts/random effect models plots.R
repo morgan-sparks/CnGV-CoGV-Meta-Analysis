@@ -16,10 +16,14 @@ library(tidybayes); library(ggridges); library(tidyverse); library(metafor); lib
 ################################################################################################
 #` plots for CnGV
 
-mod_2randeff <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
-mod_2randeff <- readRDS("./mod_norm_logtrans_trait_2randeff_student_sp_allES.rds")
+mod_2randeff <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_sp_allES.rds")
+
 get_variables(mod_2randeff)
 ### see for example https://github.com/mvuorre/brmstools
+
+# verify there are no divergent transitions
+
+mod_2randeff["divergent__"]
 
 ########################
 # workflow for paper number plot
@@ -114,12 +118,12 @@ ggplot(data = out_all_sum, aes(b_Intercept, paper.number.trait))+
 
 ### make with cogradient
 
-mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
-mod_2randeff_co <- readRDS("./mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
+mod_2randeff_co <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
 get_variables(mod_2randeff_co)
 
-
-
+### check for divergent transitions
+mod_2randeff_co["divergent__"]
+  
 ########################
 # workflow for paper number plot
 
