@@ -9,11 +9,11 @@ library(brms); library(dplyr); library(knitr); library(kableExtra); library(sjPl
 ###load in models/data
 
 #int only mode for cngv
-int_mod <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_sp.rds")
+int_mod <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_sp_allES.rds")
 get_variables(int_mod)
 
 #int only mode for cogv
-int_mod_co <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co.rds")
+int_mod_co <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
 
 #metaregression mod for cngv
 metareg_mod <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
@@ -148,12 +148,12 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Ma
 
 # intercept only model for countergradient variation
 
-int_mod_ppcheck <- pp_check(int_mod) + labs(x = "Effect Size", y = "Frequency")+ theme_classic() + ggtitle(label = "a)")
+int_mod_ppcheck <- pp_check(int_mod) + labs(x = "Effect Size", y = "Frequency")+ lims(x = c(0,10), y = c(0,1)) +theme_classic() + ggtitle(label = "a)")
 
 
 #intercept only model for cogradient variation
 
-int_mod_co_ppcheck <- pp_check(int_mod_co) + labs(x = "Effect Size", y = "Frequency")+ theme_classic()+ ggtitle(label = "b)")
+int_mod_co_ppcheck <- pp_check(int_mod_co) + labs(x = "Effect Size", y = "Frequency")+ lims(x = c(0,10), y = c(0,1))+ theme_classic()+ ggtitle(label = "b)")
 
 #combine two
 int_mods_ppchecks <- int_mod_ppcheck + int_mod_co_ppcheck
