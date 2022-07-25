@@ -16,7 +16,7 @@ get_variables(int_mod)
 int_mod_co <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_norm_logtrans_trait_2randeff_student_co_sp_allES.rds")
 
 #metaregression mod for cngv
-metareg_mod <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
+metareg_mod <- readRDS("~/CnGV-CoGV-Meta-Analysis/Data/model_output/mod_metareg_noyear_sp_wInt_allES_correct_parallel.RDS")
 
 #model data
 
@@ -71,7 +71,7 @@ int_mod_priors <- data.frame(int_mod$prior)
 
 int_mod_priors[4:9,1] <- "cauchy(0, 2)"
 
-int_mod_priors[,c(1:4,9)]%>%
+int_mod_priors[,c(1:4,10)]%>%
   kbl() %>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_priors.pdf")
@@ -83,7 +83,7 @@ int_mod_priors_co <- data.frame(int_mod_co$prior)
 
 int_mod_priors_co[4:9,1] <- "cauchy(0, 2)"
 
-int_mod_priors_co[,c(1:4,9)]%>%
+int_mod_priors_co[,c(1:4,10)]%>%
   kbl() %>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/int_mod_co_priors.pdf")
@@ -94,7 +94,7 @@ metareg_priors <- data.frame(metareg_mod$prior)
 metareg_priors[2:32,1] <- "normal(0, 1)"
 metareg_priors[35:40,1] <- "cauchy(0, 2)"
 
-metareg_priors[,c(1:4,9)]%>%
+metareg_priors[,c(1:4,10)]%>%
   kbl() %>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_priors.pdf")
@@ -102,11 +102,16 @@ metareg_priors[,c(1:4,9)]%>%
 ################################################################################################
 # table for Stan control variables
 
+#make stan_args objects to call for table
+int_mod_stanargs<- int_mod$fit@stan_args
+int_mod_co_stanargs<- int_mod_co$fit@stan_args
+metareg_mod_stanargs <- metareg_mod$fit@stan_args
+
 mod_ctrlvars <- matrix(nrow = 3, ncol = 7)
 colnames(mod_ctrlvars) <- c("Model", "Iterations", "Burn-in", "Cores", "Thin", "adapt_delta", "max_treedepth")
-mod_ctrlvars[1,] <- c("Countergradient Random Effects", 20000, 7500, 4, 1, 0.995, 20)
-mod_ctrlvars[2,] <- c("Cogradient Random Effects", 10000, 2500, 4, 1, 0.99, 18)
-mod_ctrlvars[3,] <- c("Countergradient Metaregression", 22500, 7500, 4, 10, 0.995, 20)
+mod_ctrlvars[1,] <- c("Countergradient Random Effects", int_mod_stanargs[[1]]$iter, int_mod_stanargs[[1]]$warmup, 4, int_mod_stanargs[[1]]$thin,int_mod_stanargs[[1]]$control$adapt_delta, int_mod_stanargs[[1]]$control$max_treedepth)
+mod_ctrlvars[2,] <- c("Cogradient Random Effects",  int_mod_co_stanargs[[1]]$iter, int_mod_co_stanargs[[1]]$warmup, 4, int_mod_co_stanargs[[1]]$thin,int_mod_co_stanargs[[1]]$control$adapt_delta, int_mod_co_stanargs[[1]]$control$max_treedepth)
+mod_ctrlvars[3,] <- c("Countergradient Metaregression",  metareg_mod_stanargs[[1]]$iter, metareg_mod_stanargs[[1]]$warmup, 4, metareg_mod_stanargs[[1]]$thin,metareg_mod_stanargs[[1]]$delta, metareg_mod_stanargs[[1]]$max_depth)
 mod_ctrlvars <- data.frame(mod_ctrlvars)
 
 mod_ctrlvars %>% 
@@ -118,11 +123,11 @@ mod_ctrlvars %>%
 # make trace plots for each variable
 
 #for int_mod
-get_variables(int_mod)
+get_variables(int_mod)[1:10]
 int_mod_tracevars <- get_variables(int_mod)[1:4]
 
 # for int_mod_co
-get_variables(int_mod_co)
+get_variables(int_mod_co)[1:10]
 int_mod_co_tracevars <- get_variables(int_mod_co)[1:4]
 
 int_mod_traceplot <- mcmc_trace(int_mod, pars = int_mod_tracevars, facet_args = list(ncol = 1, strip.position = "left")) + ggtitle(label = "a)") + theme(legend.position = 'none')
@@ -134,7 +139,7 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Ma
 
 
 # for metareg mod
-get_variables(metareg_mod)
+get_variables(metareg_mod)[1:50]
 metareg_mod_tracevars <- get_variables(metareg_mod)[1:34]
 
 metareg_mod_traceplot <- mcmc_trace(metareg_mod, pars = metareg_mod_tracevars, facet_args = list(ncol = 4))

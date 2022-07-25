@@ -31,7 +31,7 @@ mod_2randeff["divergent__"]
 # posterior summary
 posteriors <- exp(posterior_samples(mod_2randeff))
 
-posterior_summary(posteriors[1:5])
+round(posterior_summary(posteriors[1:5]), 2)
 
 # pull out posterior distributions for paper variable + b_Intercept
 out_r <- spread_draws(mod_2randeff, r_paper_number[paper_number, term], b_Intercept) %>%
@@ -130,7 +130,7 @@ mod_2randeff_co["divergent__"]
 #### posterior summary
 posteriors_co <- exp(posterior_samples(mod_2randeff_co))
 
-posterior_summary(posteriors_co[1:5])
+round(posterior_summary(posteriors_co[1:5]), 2)
 
 ####
 
@@ -225,10 +225,14 @@ out_both_sum_med <- bind_rows(out_cn, out_co) %>%
   median_qi(b_Intercept)
 
 ## plot for fig 2 in manuscript
+
+
 fig2 <- ggplot() +
   # geom_density_ridges(rel_min_height = 0.01, col = NA, 
   #                     scale = 1, fill = "dodgerblue", alpha = 0.75) +
   # geom_pointintervalh(data = out_both_sum, size = 4) +
+  geom_vline(xintercept = 1.05, linetype = "dashed", color = "darkorchid4", size = 0.75) +
+  geom_vline(xintercept = 2.13, linetype = "dashed", color = "darkgreen", size = 0.75) +
   geom_dots(data = out_both, aes(x = b_Intercept, y = adaptation, color = adaptation)) +
   scale_color_manual(values=c("darkgreen", "darkorchid4")) +
   geom_pointinterval(data = out_both_sum, aes(x= b_Intercept, y = adaptation, xmin = .lower, xmax = .upper), size = 4)+
@@ -238,8 +242,7 @@ geom_text(
     # Use glue package to combine strings
     aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf, y = adaptation),
     hjust = "inward", nudge_y = 0.33) +
-  xlim(0,5) +
-  geom_vline(xintercept = 1, linetype = "dashed") +
+  xlim(0,8) +
   labs(x = "Effect size", y = NULL) +
   theme_classic(base_size = 16) +
   theme(legend.position = "none",
@@ -256,6 +259,8 @@ fig2_all <-ggplot() +
   # geom_density_ridges(rel_min_height = 0.01, col = NA, 
   #                     scale = 1, fill = "dodgerblue", alpha = 0.75) +
   # geom_pointintervalh(data = out_both_sum, size = 4) +
+  geom_vline(xintercept = 1.05, linetype = "dashed", color = "darkorchid4", size = 0.75) +
+  geom_vline(xintercept = 2.13, linetype = "dashed", color = "darkgreen", size = 0.75) +
   geom_dots(data = out_both, aes(x = b_Intercept, y = adaptation, color = adaptation)) +
   scale_color_manual(values=c("darkgreen", "darkorchid4")) +
   geom_pointinterval(data = out_both_sum, aes(x= b_Intercept, y = adaptation, xmin = .lower, xmax = .upper), size = 4)+
@@ -265,7 +270,6 @@ fig2_all <-ggplot() +
     # Use glue package to combine strings
     aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf, y = adaptation),
     hjust = "inward", nudge_y = 0.33) +
-  geom_vline(xintercept = 1, linetype = "dashed") +
   labs(x = "Effect size", y = NULL) +
   theme_classic(base_size = 16) +
   theme(legend.position = "none",
@@ -274,5 +278,7 @@ fig2_all <-ggplot() +
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/Fig_2_all_results.png", fig2_all,
        width = 6, height = 4, units = "in", dpi = 300)
-  
+
+### coefficients
+
 

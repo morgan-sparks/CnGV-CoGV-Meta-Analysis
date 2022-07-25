@@ -108,16 +108,19 @@ for(i in levels(model_data_temp$Paper.Name)){
     #third level selects experiments (there are occasionally multiple experiments per trait)
     for(k in levels(temp2$Experiment..)){
       temp3 <- temp2[which(temp2$Experiment..==k),]
+      # the below are commented out to now use multiple values per experiment rather than just the mean
       # calculate effect size, variance and sample size
-      temp.mn <- mean(temp3$yi)
-      temp.var <- sum(temp3$vi)/(length(temp3$vi)^2)
-      temp.ss <- mean(temp3$Sample.Size)
-      temp.row <- cbind(temp3[1,], temp.mn, temp.var, temp.ss)
+      # temp.mn <- yi
+      # temp.var <- vi
+      # temp.ss <- temp3$Sample.Size
+      # temp.row <- cbind(temp3[1,], temp.mn, temp.var, temp.ss)
       # select max and min temps
       temp_max <- max(temp3$Treatment)
       temp_min <- min(temp3$Treatment)
-      temp_diff <- temp_max - temp_min # this will be out temperature difference to use
-      temp.row <- cbind(temp3[1,], temp.mn, temp.var, temp.ss, temp_diff, temp_max, temp_min)
+      temp_diff <- temp_max - temp_min # this will be our temperature difference to use
+      temp_diff_row <- rep(temp_diff, nrow(temp3))
+      #temp.row <- cbind(temp3[1,], temp.mn, temp.var, temp.ss, temp_diff, temp_max, temp_min)
+      temp.row <- cbind(temp3, temp_diff = temp_diff_row)
       OUT <- rbind(OUT, temp.row)
     }
   }
@@ -171,7 +174,7 @@ delta_grad_dat <- OUT
 ###-----------------------------
 ### first for latitude
 
-species_list_lat <- as.character(unique(delta_grad_dat$Species))
+species_list_lat <- as.character(unique(model_data_lat$Species))
 
 ### use taxize functions to download taxonomic info and turn to a tree
 #download taxonomic data from ncbi
@@ -193,13 +196,13 @@ lat_vcv_mat <- vcv.phylo(taxize_tree$phylo, corr = TRUE)
 rownames(lat_vcv_mat) <- gsub(" ", "_", rownames(lat_vcv_mat))
 colnames(lat_vcv_mat) <- rownames(lat_vcv_mat)
 
-delta_grad_dat$Species <- gsub(" ", "_", delta_grad_dat$Species)
+model_data_lat$Species <- gsub(" ", "_", model_data_lat$Species)
 
 rownames(lat_vcv_mat)[which(rownames(lat_vcv_mat)=="Eilema_depressum")] <- "Eilema_depressa"
 colnames(lat_vcv_mat)[which(colnames(lat_vcv_mat)=="Eilema_depressum")] <- "Eilema_depressa"
 
-lat_mod <- lme4qtl::relmatLmer(log(abs(temp.mn)) ~  distance + (1|Paper.Name/Trait) + (1|Species),
-                                delta_grad_dat,
+lat_mod <- lme4qtl::relmatLmer(log(abs(yi)) ~  distance.between.analyzed..a.and.b..populations..km.  + (1|Paper.Name/Trait) + (1|Species),
+                                model_data_lat,
                                 relmat = list(Species = lat_vcv_mat))
 
 
@@ -238,7 +241,7 @@ fin_temp_dat$Species <- gsub(" ", "_", fin_temp_dat$Species)
 fin_temp_dat[which(fin_temp_dat$Species == "Uca_pugilator"),"Species"] <- "Leptuca_pugilator" 
 fin_temp_dat[which(fin_temp_dat$Species == "Idotea_balthica"),"Species"] <- "Idotea_baltica" 
 
-temp_mod <- lme4qtl::relmatLmer(log(abs(temp.mn)) ~  temp_diff + (1|Paper.Name/Trait) + (1|Species),
+temp_mod <- lme4qtl::relmatLmer(log(abs(yi)) ~  temp_diff + (1|Paper.Name/Trait) + (1|Species),
                                 fin_temp_dat,
                                 relmat = list(Species = temp_vcv_mat))
 
@@ -275,7 +278,7 @@ tab_model(lat_mod, temp_mod, transform = "exp", p.val = "kr",
 fin_temp_dat[which(fin_temp_dat$temp_diff == 0),]
 
 temp_reg <- ggplot(fin_temp_dat) + 
-  geom_point(aes(x=temp_diff, y = log(abs(temp.mn)))) +
+  geom_point(aes(x=temp_diff, y = log(abs(yi)))) +
   labs(x = "Experimental Temperature Difference (°C)", y = "Log Effect Size", title = "b)") +
   #lims(x = c(0,25)) +
   #geom_smooth(aes(x=temp_diff, y = log(abs(temp.mn))),method=lm, se=FALSE) +
@@ -285,8 +288,8 @@ temp_reg <- ggplot(fin_temp_dat) +
 
 ####
 
-dist_reg <- ggplot(delta_grad_dat) +
-  geom_point(aes(x=distance.between.analyzed..a.and.b..populations..km., y = log(abs(temp.mn))))  +
+dist_reg <- ggplot(model_data_lat) +
+  geom_point(aes(x=distance.between.analyzed..a.and.b..populations..km., y = log(abs(yi))))  +
   labs(x = "Latitudinal Distance (km)", y = "Log Effect Size",  title = "a)")+
   #geom_smooth(aes(x=distance.between.analyzed..a.and.b..populations..km., y = log(abs(temp.mn))),method=lm, se=FALSE) +
   theme_classic(base_size =  14)

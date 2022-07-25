@@ -13,9 +13,12 @@ library(tidyverse); library(tidybayes); library(ggridges); library(metafor); lib
 ###
 
 
-mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt_allES_correct_parallel.RDS")
 get_variables(mod_metareg_strongprior)
 mod_metareg_strongprior
+
+# check for divergent transitions
+mod_metareg_strongprior["divergent__"]
 
 posteriors_sp <- round(exp(posterior_samples(mod_metareg_strongprior)), digits = 3)
 
@@ -24,7 +27,7 @@ posterior_summary(posteriors_sp[1:34])
 
 post_int_sum<-  data.frame(posterior_summary(posteriors_sp[1:34]))
 
-post_int_sum <- round(post_int_sum[,1:4], 3)
+post_int_sum <- round(post_int_sum[,1:4], 2)
 
 post_int_sum # make sure rounding worked
 
@@ -44,7 +47,7 @@ post_int_sum %>%
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   save_kable("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/Table 1 wInt.pdf")
 
-
+write.table(file = "~/Downloads/Table1.csv", post_int_sum, sep = ",")
 ####
 
 #gather main effect emmean draws for each covariate
@@ -98,7 +101,7 @@ all_emmeans_sum_med <- group_by(all_emmeans, Variable) %>%
 cust_pal <- c("#E6AB02", "#1B9E77", "#7570B3","#66A61E" )
 
 # save full distribution for supplementry materials
-supp_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
+supp_fig_big <- ggplot(data = all_emmeans, aes(.value, Variable))+
   geom_quasirandom(aes(color= covariate), groupOnX = FALSE, size = 0.01) +
   geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "grey50", size = 2)  +
   geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "black", size =4)  +
@@ -106,31 +109,51 @@ supp_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
   geom_vline(xintercept = 0) +
   geom_vline(xintercept = 1.03, linetype = "dashed") +
   geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
-            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = 0) +
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.25, size = 2.5) +
   scale_color_manual(values = cust_pal) +
-  labs(y = "", x = "Estimated Marginal Mean") +
-  xlim(-1,55)+
+  labs(y = "", x = "Estimated Marginal Mean", subtitle = "b)") +
   theme_classic(base_size = 14) +
-  theme(legend.position = "none")
+  theme(legend.position = "none", axis.text.y=element_blank(), axis.ticks.y = element_blank())
+
+supp_fig_small<- ggplot(data = all_emmeans, aes(.value, Variable))+
+  geom_density_ridges(aes(fill= covariate), rel_min_height = 0.1, col = NA, scale = 1, height = 0.9) +
+  geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper, size = 1), color = "grey50", interval_size_range = c(0.25, .5))  +
+  geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper, size = 1), color = "black", interval_size_range = c(0.5, 1))  +
+  geom_vline(xintercept = 1.05, linetype = "dashed") +
+  geom_point(data = all_emmeans_sum_med, aes(.value, Variable), shape = 18, color = "darkgrey", size = 2.5) +
+  geom_vline(xintercept = 0) +
+  # geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
+  #           aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.5, size = 2.5) +
+  scale_fill_manual(values = cust_pal) +
+  labs(y = "", x = "Estimated Marginal Mean", subtitle = "a)") +
+  xlim(-0.5,15)+
+  theme_classic(base_size = 14) +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        plot.margin = margin(1, 1, 1, 1, "cm"),
+        plot.background = element_rect(fill = "white"))
+
+supp_fig <- supp_fig_small + supp_fig_big
+
 
 ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Supplementary Materials/metareg_mod_all.png", supp_fig,
-         width = 7, height = 7, units = "in", dpi = 600)
+         width = 10, height = 7, units = "in", dpi = 600)
 
-# save publication figure 3           
+## pdf for main manuscript
 pub_fig <- ggplot(data = all_emmeans, aes(.value, Variable))+
   geom_density_ridges(aes(fill= covariate), rel_min_height = 0.1, col = NA, scale = 1, height = 0.9) +
-  geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "grey50", size = 2)  +
-  geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper ), color = "black", size =4)  +
-  #geom_point(data = all_emmeans_sum_med, aes(.value, Variable), shape = 18, color = "darkgrey", size = 2) +
+  geom_pointinterval(data = all_emmeans_sum, aes(.value, Variable, xmin = .lower, xmax = .upper, size = 1), color = "grey40", interval_size_range = c(.35, .65))  +
+  geom_pointinterval(data = all_emmeans_sum_5, aes(.value, Variable, xmin = .lower, xmax = .upper, size = 1), color = "black", interval_size_range = c(0.5, 1))  +
+  geom_vline(xintercept = 1.05, linetype = "dashed") +
+  geom_point(data = all_emmeans_sum_med, aes(.value, Variable), shape = 18, color = "darkgrey", size = 2.5) +
   geom_vline(xintercept = 0) +
-  geom_vline(xintercept = 1.03, linetype = "dashed") +
   geom_text(data = mutate_if(all_emmeans_sum, is.numeric, round, 2),
-            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.25) +
+            aes(label = glue("{.value} [{.lower}, {.upper}]"), x = Inf), hjust = "inward", vjust = -0.5, size = 2.75) +
   scale_fill_manual(values = cust_pal) +
   labs(y = "", x = "Estimated Marginal Mean") +
-  xlim(-0.5,12)+
+  coord_cartesian(x = c(-0.5,5))+
   theme_classic(base_size = 14) +
-  theme(legend.position = "none",,
+  theme(legend.position = "none",
         panel.background = element_rect(fill = "white"),
         plot.margin = margin(1, 1, 1, 1, "cm"),
         plot.background = element_rect(fill = "white"))
@@ -152,7 +175,7 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/F
 
 #### same for medium strength priors
 
-mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt.RDS")
+mod_metareg_strongprior <- readRDS("~/CnGV-CoGV-Meta-analysis/Data/model_output/mod_metareg_noyear_sp_wInt_allES_correct_parallel.RDS")
 get_variables(mod_metareg_strongprior)
 mod_metareg_strongprior
 
