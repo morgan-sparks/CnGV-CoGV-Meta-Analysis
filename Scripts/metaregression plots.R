@@ -36,7 +36,7 @@ row.names(post_int_sum) <- c("Intercept", "Body size", "Carotenoid concentration
                              "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response","Elevation", 
                              "Latitude", "Migration distance", "Photoperiod", "Predator presence", "Salinity", "Shade cover", "Soil phosphate",
                              "Temperature", "Urbanisation", "Wave action",
-                             "Amphibia", "Anthaozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
+                             "Amphibia", "Anthaozoa", "Magnoliopsida", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
                              "SD Paper Number", "SD Paper Number:Trait", "SD Species"
 )
 
@@ -71,12 +71,14 @@ all_emmeans <- bind_rows(trait_emmeans, gradient_emmeans, class_emmeans,) %>%
   mutate(.value = exp(.value))
 
 ## rename levels
+# note the change of asteraceae to Magnoliopsida (Asteraceae was incorrectly included as a Class in model)
+
 all_emmeans[,"Variable"] <-  dplyr::recode(all_emmeans$Variable,
                                            "body_shape"="Body shape", "body_size"="Body size", "carotenoid_concentration" = "Carotenoid concentration", "ciliary_activity"="Ciliary activity", "developmental_rate" = "Developmental rate",
                                            "gamete_size"= "Gamete size", "growth_rate" = "Growth rate", "metabolic_rate" = "Metabolic rate", "phenology" = "Phenology", "reproductive_rate" = "Reproductive rate",
                                            "thermal_response" = "Thermal response", "carotenoid availability" = "Carotenoid availability", "elevation" = "Elevation", "latitude" = "Latitude", "migration distance" = "Migration distance",
                                            "photoperiod" = "Photoperiod", "predator" = "Predator presence", "salinity" = "Salinity", "shade cover" = "Shade cover", "soil phosphate level" = "Soil phosphate level",
-                                           "temperature" = "Temperature", "urbanisation" = "Urbanisation", "wave action" = "Wave action", "Liliopsida " = "Liliopsida"
+                                           "temperature" = "Temperature", "urbanisation" = "Urbanisation", "wave action" = "Wave action", "Liliopsida " = "Liliopsida", "Asteraceae" = "Magnoliopsida",
                                            )
 
 # reorder factor levels for plot 
@@ -84,7 +86,7 @@ all_emmeans <- all_emmeans %>%
   ungroup() %>%
   mutate(Variable = fct_relevel(Variable,c( "Thermal response","Reproductive rate","Phenology","Metabolic rate","Growth rate","Gamete size","Developmental rate","Ciliary activity","Carotenoid concentration","Body size","Body shape",                 
                                             "Wave action","Urbanisation","Temperature","Soil phosphate level","Shade cover", "Salinity","Predator presence", "Photoperiod", "Migration distance","Latitude", "Elevation", "Carotenoid availability",   
-                                            "Reptilia", "Malacostraca","Liliopsida", "Insecta","Gastropoda","Bivalvia", "Asteraceae","Anthozoa", "Amphibia","Actinopterygii"
+                                            "Reptilia", "Malacostraca","Magnoliopsida","Liliopsida", "Insecta","Gastropoda","Bivalvia","Anthozoa", "Amphibia","Actinopterygii"
                                             )))         
   
 
@@ -162,8 +164,12 @@ ggsave("~/Dropbox/PhD Work/Critical Review/Work for Publication/Tables:Figures/F
          width = 6, height = 8, units = "in", dpi = 600)
 
 
-
+########################################################################################################################################################################################################################
 ########################################################################
+##################################################
+#########################
+#########
+
 
 
 ###############
@@ -195,7 +201,7 @@ row.names(post_sum) <- c("Intercept", "Body size", "Carotenoid concentration", "
                          "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response","Elevation", 
                          "Latitude", "Migration distance", "Photoperiod", "Predator presence", "Salinity", "Shade cover", "Soil phosphate",
                          "Temperature", "Urbanisation", "Wave action",
-                         "Amphibia", "Anthozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
+                         "Amphibia", "Anthozoa", "Magnoliopsida", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia",
                          "SD Paper Number", "SD Paper Number:Trait", "SD Species"
                          )
 
@@ -321,9 +327,9 @@ anthozoa <- spread_draws(mod_metareg_strongprior,b_ClassAnthozoa ) %>%
   mutate(posterior_val = exp(b_ClassAnthozoa ),
          variable = "Anthozoa", covariate = "Class")
 
-asteraceae <- spread_draws(mod_metareg_strongprior,b_ClassAsteraceae  ) %>%
-  mutate(posterior_val = exp(b_ClassAsteraceae  ),
-         variable = "Asteraceae", covariate = "Class")
+Magnoliopsida <- spread_draws(mod_metareg_strongprior,b_ClassMagnoliopsida  ) %>%
+  mutate(posterior_val = exp(b_ClassMagnoliopsida  ),
+         variable = "Magnoliopsida", covariate = "Class")
 
 bivalvia <- spread_draws(mod_metareg_strongprior,b_ClassBivalvia) %>%
   mutate(posterior_val = exp(b_ClassBivalvia  ),
@@ -367,13 +373,13 @@ all_draws <- bind_rows(body_shape, body_size, carotenoid_concentration, ciliary_
                         metabolic_rate, phenology, reproductive_rate, thermal_response,
                        elevation, latitude, migration_distance, photoperiod, predator, salinity, shade_cover, soil_phosphate,
                        temperature, urbanisation, wave_action,
-                       amphibia, anthozoa, asteraceae, bivalvia, gastropoda, insecta,liliopsida, malacostraca, reptilia)  %>%
+                       amphibia, anthozoa, Magnoliopsida, bivalvia, gastropoda, insecta,liliopsida, malacostraca, reptilia)  %>%
   ungroup() %>% # Ensure that Average effect is on the bottom of the forest plot
   mutate(variable = fct_relevel(variable,c("Body shape", "Body size", "Carotenoid concentration", "Ciliary activity", "Developmental rate", "Gamete size", "Growth rate", 
                                            "Metabolic rate", "Phenology", "Reproductive rate", "Thermal response", "Elevation",
                                            "Latitude", "Migration distance","Photoperiod", "Predator", "Salinity", "Shade cover", "Soil phosphate",
                                            "Temperature", "Urbanisation", "Wave action",
-                                            "Amphibia", "Anthozoa", "Asteraceae", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia"
+                                            "Amphibia", "Anthozoa", "Magnoliopsida", "Bivalvia", "Gastropoda", "Insecta","Liliopsida", "Malacostraca", "Reptilia"
                                            )))
 
 all_draws$covariate <- as.factor(all_draws$covariate)
